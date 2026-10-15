@@ -1,9 +1,20 @@
 <script setup>
+  import { watch } from 'vue'
+  import { useRoute } from 'vue-router'
   import { useSessionStore } from '@/store/useSessionStore'
   import zhTw from 'element-plus/es/locale/lang/zh-tw'
   import SiteHeader from '@/components/Showcase/SiteHeader.vue'
   import { scrollToElement } from '@/utils/dom'
   const session = useSessionStore()
+  const route = useRoute()
+  watch(
+    () => [route.meta.demo, route.meta.system, session.theme],
+    ([demo, system]) => {
+      document.documentElement.dataset.product = demo ? system || 'storefront' : ''
+      document.documentElement.classList.toggle('dark', !demo && session.isDark)
+    },
+    { immediate: true }
+  )
 </script>
 
 <template>

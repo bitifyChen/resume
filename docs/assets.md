@@ -9,3 +9,7 @@
 本回合新增圖片的完整提示：
 
 > Use case: product-mockup. Create a realistic studio still-life photograph for a fictional minimal everyday goods web store portfolio demo. Wide 3:2 composition on pale cool grey seamless paper: matte sage green insulated water bottle, folded charcoal canvas tote bag, off-white ceramic coffee cup, graphite wireless headphones and a small green notebook. Carefully arranged still life with negative space on left, main objects on right. Soft daylight, subtle grounded shadows, tasteful editorial product photography, crisp material details. No brand names, no logos, no text, no watermark. Product image only, no web UI and no device mockups.
+
+# 第二版案例封面
+
+`public/images/storefront-demo.jpg`、`commerce-chat-demo.jpg`、`pos-dashboard-demo.jpg` 改為本重製網站在瀏覽器中的實際截圖，資料均為虛構，不是公司正式畫面。舊概念封面已不在入口或案例頁使用。商品攝影仍沿用本專案生成的 `everyday.png`。

@@ -164,9 +164,7 @@
       <AppIcon name="Box" :size="20" />
       <span>
         {{ database?.stores.find((store) => store.id === session.storeId)?.name }} /
-        {{ rows.length }} 項商品，{{
-          rows.filter((row) => row.status === '待補貨').length
-        }}
+        {{ rows.length }} 項商品，{{ rows.filter((row) => row.status === '待補貨').length }}
         項待補貨。
       </span>
       <button v-if="allowed('inventory', 'edit')" class="text-button" @click="downloadTemplate">

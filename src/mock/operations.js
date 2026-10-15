@@ -37,7 +37,7 @@ export function applyOperation(
     }
     case 'cart.set': {
       const line = db.cart.find((item) => item.productId === payload.productId)
-      required(line, '購物袋沒有這個商品')
+      required(line, '購物車沒有這個商品')
       required(Number.isInteger(payload.quantity) && payload.quantity >= 0, '數量不正確')
       required(
         payload.quantity <= find(db.products, payload.productId, '商品').stock,

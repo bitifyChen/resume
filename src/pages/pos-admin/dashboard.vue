@@ -1,7 +1,9 @@
 <script setup>
-  import { computed, defineAsyncComponent, ref } from 'vue'
+  import { computed, defineAsyncComponent, ref, toRef } from 'vue'
+  import { ElMessage } from 'element-plus'
   import { useDemoData } from '@/hook/useDemoData'
   import { useSessionStore } from '@/store/useSessionStore'
+  import { useDashboardLayout } from '@/hook/useDashboardLayout'
   import { money, number } from '@/utils/format'
   import { downloadCsv } from '@/utils/csv'
   import AppIcon from '@/components/Shared/AppIcon.vue'
@@ -9,11 +11,13 @@
   const SalesChart = defineAsyncComponent(() => import('@/components/Pos/SalesChart.vue'))
   const { database, allowed, isPending } = useDemoData()
   const session = useSessionStore()
+  const { cards, editMode, dragging, grid, drop, nudge, resize, reset } = useDashboardLayout(
+    toRef(session, 'storeId')
+  )
   const period = ref(7)
   const tableOpen = ref(false)
-  const multiplier = computed(() =>
-    session.storeId === 's1' ? 1 : session.storeId === 's2' ? 0.78 : 0.64
-  )
+  const store = computed(() => database.value?.stores.find((item) => item.id === session.storeId))
+  const multiplier = computed(() => ({ s1: 1, s2: 0.78, s3: 0.64 })[session.storeId] || 1)
   const sales = computed(() =>
     (database.value?.sales.slice(-period.value) || []).map((row) => ({
       ...row,
@@ -24,10 +28,31 @@
   const inventory = computed(
     () => database.value?.inventory.filter((item) => item.storeId === session.storeId) || []
   )
-  const lowStock = computed(() => inventory.value.filter((item) => item.quantity <= item.threshold))
-  const revenue = computed(() => sales.value.reduce((sum, row) => sum + row.revenue, 0))
-  const orders = computed(() => sales.value.reduce((sum, row) => sum + row.orders, 0))
-  const exportReport = () => {
+  const today = computed(() => sales.value.at(-1) || { revenue: 0, orders: 0 })
+  const receipts = computed(() =>
+    inventory.value.slice(0, 7).map((item, index) => ({
+      id: `POS-${session.storeId.toUpperCase()}-${1086 - index}`,
+      time: `14:${String(52 - index * 7).padStart(2, '0')}`,
+      name: item.name,
+      total: item.price * ((index % 3) + 1),
+      payment: index % 2 ? '現金' : '信用卡',
+      status: '已完成'
+    }))
+  )
+  const documents = computed(() =>
+    Object.fromEntries(
+      ['purchaseOrders', 'returnOrders', 'transferOrders', 'damageOrders'].map((id, group) => [
+        id,
+        inventory.value.slice(group, group + 2).map((item, index) => ({
+          id: `${['PUR', 'RET', 'TRF', 'DMG'][group]}-${session.storeId.toUpperCase()}-${2008 - index}`,
+          name: item.name,
+          quantity: group === 0 ? 20 - index * 5 : index + 2,
+          status: index ? '已完成' : '待處理'
+        }))
+      ])
+    )
+  )
+  function exportReport() {
     if (allowed('reports', 'export'))
       downloadCsv(
         'demo-sales-report.csv',
@@ -35,135 +60,171 @@
         sales.value.map((row) => [row.label, row.revenue, row.orders])
       )
   }
+  async function copyStore() {
+    try {
+      await navigator.clipboard.writeText(`DEMO-${session.storeId.toUpperCase()}`)
+      ElMessage.success('已複製展示門店 ID')
+    } catch {
+      ElMessage.info(`展示門店 ID：DEMO-${session.storeId.toUpperCase()}`)
+    }
+  }
 </script>
 
 <template>
   <el-skeleton v-if="isPending" :rows="10" animated />
   <AccessNotice v-else-if="!allowed('reports')" />
   <template v-else>
-    <div class="page-heading">
+    <header class="pos-dashboard-hero">
       <div>
-        <p class="page-context">Retail / Overview</p>
-        <h1>掌握門店的每一天。</h1>
-        <p>這裡的營運數字皆為虛構資料，供互動展示使用。</p>
-      </div>
-      <el-radio-group v-model="period" size="small" aria-label="報表期間">
-        <el-radio-button :value="7">近 7 天</el-radio-button>
-        <el-radio-button :value="14">近 14 天</el-radio-button>
-      </el-radio-group>
-    </div>
-    <div class="metric-grid">
-      <article class="metric">
-        <div>
-          <span>期間營收</span>
-          <AppIcon name="ShoppingBag" :size="21" />
-        </div>
-        <strong>{{ money(revenue) }}</strong>
-        <p>{{ period }} 天營收加總 / 展示資料</p>
-      </article>
-      <article class="metric">
-        <div>
-          <span>完成訂單</span>
-          <AppIcon name="ShoppingCart" :size="21" />
-        </div>
-        <strong>
-          {{ number(orders) }}
-          <small>筆</small>
-        </strong>
-        <p>每日訂單加總 / 展示資料</p>
-      </article>
-      <article class="metric">
-        <div>
-          <span>平均客單價</span>
-          <AppIcon name="Goods" :size="21" />
-        </div>
-        <strong>{{ money(orders ? Math.round(revenue / orders) : 0) }}</strong>
-        <p>期間營收 ÷ 完成訂單</p>
-      </article>
-      <article class="metric attention">
-        <div>
-          <span>低庫存提醒</span>
-          <AppIcon name="Box" :size="21" />
-        </div>
-        <strong>
-          {{ lowStock.length }}
-          <small>項</small>
-        </strong>
-        <RouterLink to="/demo/pos-admin/inventory">
-          查看待補貨商品
-          <AppIcon name="ArrowRight" :size="14" />
-        </RouterLink>
-      </article>
-    </div>
-    <div class="dashboard-grid">
-      <section class="dashboard-panel sales-panel">
-        <header>
-          <div>
-            <h2>銷售趨勢</h2>
-            <p>每日營收與訂單變化</p>
-          </div>
-          <el-button v-if="allowed('reports', 'export')" text @click="exportReport">
-            <AppIcon name="Download" :size="16" />
-            匯出
-          </el-button>
-        </header>
-        <SalesChart :rows="sales" />
-        <button class="text-button chart-table-toggle" @click="tableOpen = !tableOpen">
-          {{ tableOpen ? '收起數值資料' : '檢視數值資料' }}
+        <h1>{{ store?.name }}</h1>
+        <button class="text-button store-copy" @click="copyStore">
+          門店 ID：DEMO-{{ session.storeId.toUpperCase() }}
+          <AppIcon name="Collection" :size="12" />
         </button>
-        <el-table v-if="tableOpen" :data="sales" size="small">
-          <el-table-column prop="label" label="日期" />
-          <el-table-column prop="revenue" label="營收" />
-          <el-table-column prop="orders" label="訂單數" />
-        </el-table>
-      </section>
-      <section class="dashboard-panel stock-panel">
-        <header>
-          <div>
-            <h2>待補貨清單</h2>
-            <p>庫存已達警戒值</p>
+      </div>
+      <div class="heading-actions">
+        <el-button :type="editMode ? 'primary' : 'default'" @click="editMode = !editMode">
+          <AppIcon :name="editMode ? 'Check' : 'Edit'" :size="15" />
+          {{ editMode ? '完成編輯' : '編輯看板' }}
+        </el-button>
+        <el-button @click="reset">重設排列</el-button>
+      </div>
+    </header>
+    <p v-if="editMode" class="dashboard-edit-hint" role="status">
+      拖曳標題重新排序，拖曳右下角調整尺寸；也可使用各卡片的左右按鈕排序。排列依門店儲存在本機。
+    </p>
+    <div ref="grid" class="pos-widget-grid" :class="{ 'is-editing': editMode }">
+      <article
+        v-for="card in cards"
+        :key="card.id"
+        class="pos-widget"
+        :class="{
+          'is-metric': card.id.startsWith('today') || card.id === 'productSpecs',
+          'is-dragging': dragging === card.id
+        }"
+        :style="{ '--cols': card.cols, '--rows': card.rows }"
+        @dragover.prevent
+        @drop.prevent="drop(card.id)"
+      >
+        <header
+          class="pos-widget-heading"
+          :draggable="editMode"
+          @dragstart="dragging = card.id"
+          @dragend="dragging = ''"
+        >
+          <h2>{{ card.title }}</h2>
+          <div v-if="editMode" class="widget-edit-actions">
+            <button
+              class="icon-button"
+              :aria-label="`向前移動${card.title}`"
+              @click="nudge(card.id, -1)"
+            >
+              <AppIcon name="ArrowLeft" :size="13" />
+            </button>
+            <button
+              class="icon-button"
+              :aria-label="`向後移動${card.title}`"
+              @click="nudge(card.id, 1)"
+            >
+              <AppIcon name="ArrowRight" :size="13" />
+            </button>
           </div>
-          <AppIcon name="Box" :size="20" />
+          <AppIcon v-else-if="card.id === 'todayOrders'" name="ShoppingCart" :size="18" />
+          <AppIcon v-else-if="card.id === 'todayRevenue'" name="ShoppingBag" :size="18" />
+          <AppIcon v-else-if="card.id === 'productSpecs'" name="Goods" :size="18" />
         </header>
-        <div v-for="item in lowStock" :key="item.id" class="stock-warning">
-          <div>
-            <strong>{{ item.name }}</strong>
-            <span>{{ item.sku }}</span>
-          </div>
-          <div>
-            <strong>{{ item.quantity }}</strong>
-            <span>警戒 {{ item.threshold }}</span>
-          </div>
-        </div>
-        <el-empty v-if="!lowStock.length" description="目前沒有低庫存商品" :image-size="70" />
-        <RouterLink to="/demo/pos-admin/inventory" class="stock-manage-link">
-          前往庫存管理
-          <AppIcon name="ArrowRight" :size="15" />
-        </RouterLink>
-      </section>
-    </div>
-    <section class="dashboard-panel">
-      <header>
-        <div>
-          <h2>門店商品概況</h2>
-          <p>商品與售價使用獨立的零售假資料。</p>
-        </div>
-      </header>
-      <el-table :data="inventory.slice(0, 5)" empty-text="尚無商品">
-        <el-table-column prop="name" label="商品名稱" min-width="160" />
-        <el-table-column prop="sku" label="SKU" min-width="110" />
-        <el-table-column label="零售價" min-width="120">
-          <template #default="{ row }">{{ money(row.price) }}</template>
-        </el-table-column>
-        <el-table-column prop="quantity" label="現有庫存" min-width="100" />
-        <el-table-column label="狀態" min-width="110">
-          <template #default="{ row }">
-            <el-tag :type="row.quantity <= row.threshold ? 'warning' : 'success'" size="small">
-              {{ row.quantity <= row.threshold ? '待補貨' : '庫存正常' }}
-            </el-tag>
+        <div class="pos-widget-body">
+          <template v-if="card.id === 'todayOrders'">
+            <strong class="widget-value">
+              {{ number(today.orders) }}
+              <small>筆</small>
+            </strong>
+            <p class="widget-caption">今日完成訂單</p>
           </template>
-        </el-table-column>
-      </el-table>
-    </section>
+          <template v-else-if="card.id === 'todayRevenue'">
+            <strong class="widget-value">{{ money(today.revenue) }}</strong>
+            <p class="widget-caption">今日銷售金額</p>
+          </template>
+          <template v-else-if="card.id === 'productSpecs'">
+            <strong class="widget-value">
+              {{ inventory.length }}
+              <small>項</small>
+            </strong>
+            <RouterLink to="/demo/pos-admin/inventory" class="widget-caption">
+              查看商品與庫存
+            </RouterLink>
+          </template>
+          <template v-else-if="card.id === 'recentOrders'">
+            <el-table :data="receipts" size="small" height="100%">
+              <el-table-column prop="id" label="訂單編號" min-width="155" />
+              <el-table-column prop="time" label="時間" width="70" />
+              <el-table-column label="金額" width="100">
+                <template #default="{ row }">{{ money(row.total) }}</template>
+              </el-table-column>
+              <el-table-column prop="payment" label="付款方式" width="85" />
+              <el-table-column prop="status" label="狀態" width="80">
+                <template #default="{ row }">
+                  <el-tag type="success" size="small">{{ row.status }}</el-tag>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+          <template v-else-if="card.id === 'salesTrend'">
+            <div class="chart-controls">
+              <el-radio-group v-model="period" size="small" aria-label="報表期間">
+                <el-radio-button :value="7">近 7 天</el-radio-button>
+                <el-radio-button :value="14">近 14 天</el-radio-button>
+              </el-radio-group>
+              <el-button
+                v-if="allowed('reports', 'export')"
+                text
+                size="small"
+                @click="exportReport"
+              >
+                匯出
+              </el-button>
+              <button class="text-button" @click="tableOpen = !tableOpen">
+                {{ tableOpen ? '趨勢圖' : '數值資料' }}
+              </button>
+            </div>
+            <el-table v-if="tableOpen" :data="sales" size="small" height="calc(100% - 38px)">
+              <el-table-column prop="label" label="日期" />
+              <el-table-column prop="revenue" label="營收" />
+              <el-table-column prop="orders" label="訂單數" />
+            </el-table>
+            <SalesChart v-else :rows="sales" />
+          </template>
+          <template v-else>
+            <el-table :data="documents[card.id]" size="small" height="100%">
+              <el-table-column prop="id" label="單據編號" min-width="150" />
+              <el-table-column prop="name" label="商品" min-width="120" />
+              <el-table-column prop="quantity" label="數量" width="65" />
+              <el-table-column label="狀態" width="85">
+                <template #default="{ row }">
+                  <el-tag :type="row.status === '待處理' ? 'warning' : 'success'" size="small">
+                    {{ row.status }}
+                  </el-tag>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </div>
+        <button
+          v-if="editMode"
+          class="widget-resize"
+          :aria-label="`調整${card.title}尺寸`"
+          @pointerdown.prevent="resize($event, card)"
+          @keydown.right.prevent="card.cols = Math.min(12, card.cols + 1)"
+          @keydown.left.prevent="card.cols = Math.max(2, card.cols - 1)"
+          @keydown.down.prevent="card.rows = Math.min(6, card.rows + 1)"
+          @keydown.up.prevent="card.rows = Math.max(1, card.rows - 1)"
+        >
+          <AppIcon name="Edit" :size="13" />
+        </button>
+      </article>
+    </div>
+    <p class="dashboard-data-note">
+      營收、訂單與單據均為虛構資料；單據區為唯讀摘要，展示看板編排與資料呈現。
+    </p>
   </template>
 </template>

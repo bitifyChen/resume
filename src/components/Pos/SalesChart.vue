@@ -9,7 +9,6 @@
     AriaComponent
   } from 'echarts/components'
   import { CanvasRenderer } from 'echarts/renderers'
-  import { useSessionStore } from '@/store/useSessionStore'
   use([
     LineChart,
     BarChart,
@@ -20,19 +19,18 @@
     CanvasRenderer
   ])
   const props = defineProps({ rows: { type: Array, default: () => [] } })
-  const session = useSessionStore()
   const element = ref()
   let chart
   let observer
   const option = computed(() => ({
     aria: { enabled: true, description: '虛構門店每日營收與訂單趨勢，可在資料表檢視數值。' },
-    color: ['#547e6b', '#c6d4ca'],
+    color: ['#409eff', '#a5b4fc'],
     tooltip: { trigger: 'axis', valueFormatter: (value) => Number(value).toLocaleString('zh-TW') },
     legend: {
       top: 0,
       right: 0,
       itemWidth: 14,
-      textStyle: { color: session.isDark ? '#cbd2cb' : '#626a66' }
+      textStyle: { color: '#64748b' }
     },
     grid: { top: 50, left: 60, right: 40, bottom: 35 },
     xAxis: {
@@ -45,7 +43,7 @@
     yAxis: [
       {
         type: 'value',
-        splitLine: { lineStyle: { color: session.isDark ? '#343d38' : '#edf0ed' } },
+        splitLine: { lineStyle: { color: '#e2e8f0' } },
         axisLabel: { color: '#8a938e', formatter: (value) => `${value / 1000}k` }
       },
       { type: 'value', splitLine: { show: false }, axisLabel: { color: '#8a938e' } }

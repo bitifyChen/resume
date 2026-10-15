@@ -9,7 +9,7 @@
     <img
       v-if="['p1', 'p2', 'p3', 'p4', 'p5'].includes(product.id)"
       :src="asset('images/everyday.png')"
-      alt="日常用品商品情境示意"
+      :alt="`${product.name}商品情境示意`"
       loading="lazy"
       width="1536"
       height="1024"

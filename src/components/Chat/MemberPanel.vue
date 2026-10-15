@@ -1,87 +1,117 @@
 <script setup>
-  import { computed, ref } from 'vue'
+  import { computed, ref, watch } from 'vue'
   import { useDemoData } from '@/hook/useDemoData'
   import { money } from '@/utils/format'
-  import OrderDetail from '@/components/Shared/OrderDetail.vue'
   import AppIcon from '@/components/Shared/AppIcon.vue'
   const props = defineProps({
     member: { type: Object, default: null },
     orderId: { type: String, default: '' }
   })
   const { database } = useDemoData()
+  const view = ref('summary')
+  const selectedId = ref('')
   const orders = computed(
     () => database.value?.orders.filter((order) => order.memberId === props.member?.id) || []
   )
-  const related = computed(
-    () => orders.value.find((order) => order.id === props.orderId) || orders.value[0]
+  const selected = computed(() => orders.value.find((order) => order.id === selectedId.value))
+  watch(
+    () => props.member?.id,
+    () => {
+      view.value = 'summary'
+    }
   )
-  const drawer = ref(false)
-  const selectedOrder = ref('')
-  const openOrder = (id) => {
-    selectedOrder.value = id
-    drawer.value = true
+  function openOrder(id) {
+    selectedId.value = id
+    view.value = 'order'
   }
 </script>
 
 <template>
   <div v-if="member" class="member-panel">
-    <h2>會員資訊</h2>
-    <div class="member-profile">
-      <span class="avatar large" :style="{ background: member.color }">
-        {{ member.name.slice(-2) }}
-      </span>
-      <h3>{{ member.name }}</h3>
-      <p>{{ member.email }}</p>
-      <el-tag size="small" effect="plain">{{ member.level }}</el-tag>
-    </div>
-    <div class="member-mini-stats">
-      <div>
-        <strong>{{ orders.length }}</strong>
-        <span>訂單數</span>
+    <header class="member-panel-heading">
+      <button
+        v-if="view !== 'summary'"
+        class="icon-button"
+        :aria-label="view === 'order' ? '返回會員訂單' : '返回會員摘要'"
+        @click="view = view === 'order' ? 'orders' : 'summary'"
+      >
+        <AppIcon name="ArrowLeft" :size="16" />
+      </button>
+      <h2>
+        {{
+          { summary: '會員資料', detail: '會員詳情', orders: '會員訂單', order: '訂單詳情' }[view]
+        }}
+      </h2>
+    </header>
+    <template v-if="view === 'summary'">
+      <div class="member-profile">
+        <span class="avatar large" :style="{ background: member.color }">
+          {{ member.name.slice(-2) }}
+        </span>
+        <h3>{{ member.name }}</h3>
+        <p>會員</p>
       </div>
-      <div>
-        <strong>
-          {{
-            money(
-              orders.reduce((sum, order) => sum + (order.status === '已取消' ? 0 : order.total), 0)
-            )
-          }}
-        </strong>
-        <span>累積訂單金額</span>
+      <dl class="member-id-row">
+        <dt>會員 ID</dt>
+        <dd>DEMO-{{ member.id.toUpperCase() }}</dd>
+      </dl>
+      <div class="member-panel-actions">
+        <el-button round type="primary" plain @click="view = 'detail'">會員詳情</el-button>
+        <el-button round type="primary" @click="view = 'orders'">訂單</el-button>
       </div>
-    </div>
-    <section class="member-section">
-      <h3>關聯訂單</h3>
-      <button v-if="related" class="related-order" @click="openOrder(related.id)">
+    </template>
+    <template v-else-if="view === 'detail'">
+      <dl class="detail-list">
+        <dt>姓名</dt>
+        <dd>{{ member.name }}</dd>
+        <dt>電子信箱</dt>
+        <dd>{{ member.email }}</dd>
+        <dt>會員等級</dt>
+        <dd>{{ member.level }}</dd>
+        <dt>訂單數</dt>
+        <dd>{{ orders.length }}</dd>
+      </dl>
+      <h3 class="member-section-title">服務備註</h3>
+      <p class="member-note">{{ member.note }}</p>
+    </template>
+    <template v-else-if="view === 'orders'">
+      <button
+        v-for="order in orders"
+        :key="order.id"
+        class="related-order"
+        :class="{ 'is-related': order.id === orderId }"
+        @click="openOrder(order.id)"
+      >
         <span>
-          <strong>{{ related.id }}</strong>
-          <small>{{ related.items[0]?.name }}</small>
+          <strong>{{ order.id }}</strong>
+          <small>{{ order.items[0]?.name }}</small>
         </span>
         <AppIcon name="ArrowRight" :size="16" />
         <span class="related-bottom">
-          <span>{{ related.status }}</span>
-          <strong>{{ money(related.total) }}</strong>
+          <span>{{ order.status }}</span>
+          <strong>{{ money(order.total) }}</strong>
         </span>
       </button>
-      <p v-else class="muted">尚無訂單</p>
-    </section>
-    <section class="member-section">
-      <h3>服務備註</h3>
-      <p class="member-note">{{ member.note }}</p>
-    </section>
-    <section class="member-section">
-      <h3>最近訂單</h3>
-      <button
-        v-for="order in orders.slice(0, 3)"
-        :key="order.id"
-        class="recent-order"
-        @click="openOrder(order.id)"
-      >
-        <span>{{ order.id }}</span>
-        <AppIcon name="ArrowRight" :size="14" />
-      </button>
-    </section>
-    <p class="helper-text">會員與訂單皆為虛構展示資料。</p>
-    <OrderDetail v-model="drawer" :order-id="selectedOrder" />
+      <el-empty v-if="!orders.length" description="尚無訂單" :image-size="60" />
+    </template>
+    <template v-else-if="selected">
+      <dl class="detail-list">
+        <dt>訂單編號</dt>
+        <dd>{{ selected.id }}</dd>
+        <dt>狀態</dt>
+        <dd>{{ selected.status }}</dd>
+        <dt>收件人</dt>
+        <dd>{{ selected.recipient }}</dd>
+      </dl>
+      <div v-for="(item, index) in selected.items" :key="index" class="order-line">
+        <span>{{ item.name }} × {{ item.quantity }}</span>
+        <strong>{{ money(item.price * item.quantity) }}</strong>
+      </div>
+      <div class="cart-total">
+        <span>合計</span>
+        <strong>{{ money(selected.total) }}</strong>
+      </div>
+    </template>
+    <p class="helper-text">虛構會員與訂單，僅供展示。</p>
   </div>
 </template>

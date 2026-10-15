@@ -27,6 +27,8 @@
     refetch
   } = useChatWorkspace()
   const memberOpen = ref(false)
+  const panelVisible = ref(true)
+  const searchOpen = ref(false)
   function onEnter(event) {
     if (!event.shiftKey && !event.isComposing) {
       event.preventDefault()
@@ -36,36 +38,55 @@
 </script>
 
 <template>
-  <div class="chat-page-heading">
-    <div>
-      <h1>客服工作台</h1>
-      <p>每一則對話，都有完整脈絡。</p>
-    </div>
-    <el-button size="small" :disabled="saving || isPending" @click="simulate">
-      <AppIcon name="Plus" :size="14" />
-      模擬新訊息
-    </el-button>
-  </div>
+  <h1 class="sr-only">客服工作台</h1>
   <el-skeleton v-if="isPending" :rows="12" animated class="panel-skeleton" />
   <div v-else-if="error" class="panel-empty">
     <p>無法載入會話</p>
     <el-button @click="refetch">重新載入</el-button>
   </div>
-  <div v-else class="chat-workspace" :class="{ 'mobile-detail': mobileDetail }">
+  <div
+    v-else
+    class="chat-workspace"
+    :class="{ 'mobile-detail': mobileDetail, 'member-hidden': !panelVisible }"
+  >
     <section class="conversation-panel">
-      <div class="conversation-search">
+      <div class="conversation-panel-header">
+        <div class="conversation-filters" role="group" aria-label="會話篩選">
+          <button
+            v-for="tab in [
+              { value: '全部', label: '全部聊天' },
+              { value: '我的', label: '我的聊天' }
+            ]"
+            :key="tab.value"
+            :class="{ active: filter === tab.value }"
+            :aria-pressed="filter === tab.value"
+            @click="filter = tab.value"
+          >
+            {{ tab.label }}
+          </button>
+        </div>
+        <el-button
+          circle
+          plain
+          type="primary"
+          size="small"
+          :aria-label="searchOpen ? '收起搜尋' : '搜尋會話'"
+          @click="searchOpen = !searchOpen"
+        >
+          <AppIcon :name="searchOpen ? 'ArrowLeft' : 'Search'" :size="14" />
+        </el-button>
+      </div>
+      <div v-if="searchOpen" class="conversation-search">
         <el-input v-model="keyword" placeholder="搜尋會員或對話" aria-label="搜尋會話" clearable>
           <template #prefix><AppIcon name="Search" :size="16" /></template>
         </el-input>
         <div class="conversation-filters">
           <button
-            v-for="tab in ['全部', '我的', '未讀']"
-            :key="tab"
-            :class="{ active: filter === tab }"
-            :aria-pressed="filter === tab"
-            @click="filter = tab"
+            :class="{ active: filter === '未讀' }"
+            :aria-pressed="filter === '未讀'"
+            @click="filter = filter === '未讀' ? '全部' : '未讀'"
           >
-            {{ tab }}
+            僅顯示未讀
           </button>
         </div>
       </div>
@@ -103,7 +124,13 @@
         </button>
         <el-empty v-if="!conversations.length" description="沒有符合條件的會話" :image-size="70" />
       </div>
-      <p class="conversation-footer">訊息於本機模擬，支援會話狀態切換。</p>
+      <div class="conversation-footer">
+        <span>本機模擬訊息</span>
+        <el-button text size="small" :disabled="saving" @click="simulate">
+          <AppIcon name="Plus" :size="12" />
+          模擬新訊息
+        </el-button>
+      </div>
     </section>
     <section v-if="active" class="chat-room">
       <header class="chat-room-header">
@@ -114,6 +141,9 @@
         >
           <AppIcon name="ArrowLeft" />
         </button>
+        <span class="avatar chat-room-avatar" :style="{ background: member?.color }">
+          {{ member?.name.slice(-2) }}
+        </span>
         <div class="chat-person">
           <strong>{{ member?.name }}</strong>
           <span>
@@ -142,7 +172,7 @@
                 )
             "
           >
-            <el-button size="small">
+            <el-button size="small" type="primary" round>
               指派
               <AppIcon name="ArrowDown" :size="12" />
             </el-button>
@@ -178,6 +208,13 @@
             @click="memberOpen = true"
           >
             <AppIcon name="User" :size="18" />
+          </button>
+          <button
+            class="icon-button desktop-member-toggle"
+            :aria-label="panelVisible ? '收合會員面板' : '展開會員面板'"
+            @click="panelVisible = !panelVisible"
+          >
+            <AppIcon name="Grid" :size="17" />
           </button>
         </div>
       </header>
@@ -236,7 +273,7 @@
       </div>
     </section>
     <el-empty v-else description="選擇一則會話開始處理" />
-    <aside class="chat-member-sidebar">
+    <aside v-if="panelVisible" class="chat-member-sidebar">
       <MemberPanel :member="member" :order-id="active?.orderId" />
     </aside>
   </div>

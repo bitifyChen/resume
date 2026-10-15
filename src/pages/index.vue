@@ -2,102 +2,62 @@
   import { projects } from '@/data/projects'
   import { asset } from '@/utils/format'
   import AppIcon from '@/components/Shared/AppIcon.vue'
-  import { scrollToElement } from '@/utils/dom'
-  const ordered = [projects[1], projects[0], projects[2]]
 </script>
 
 <template>
   <main id="main-content" class="showcase-home page-container">
-    <section class="home-hero">
-      <div class="hero-copy">
-        <p class="eyebrow">Product engineering by Chenchen</p>
-        <h1>
-          讓產品流程，
-          <br />
-          真正運作起來。
-        </h1>
-        <p class="hero-intro">
-          商城、營運後台、POS。
-          <br />
-          從消費者體驗，到團隊每天使用的工作工具。
-        </p>
-        <a
-          href="#selected-work"
-          class="button primary"
-          @click.prevent="scrollToElement('selected-work')"
-        >
-          瀏覽產品案例
-          <AppIcon name="ArrowDown" :size="18" />
-        </a>
+    <section class="work-intro">
+      <p>Chenchen / Frontend Developer</p>
+      <h1>
+        讓實際做過的產品，
+        <br />
+        說明我的開發能力。
+      </h1>
+      <div class="work-intro-description">
+        <p>從消費者購物，到客服與門店每天使用的工作工具。</p>
+        <p>三個獨立案例，保留原產品的介面結構與操作邏輯，以假資料開放體驗。</p>
       </div>
-      <figure class="hero-visual">
-        <img
-          :src="asset('images/commerce-admin.png')"
-          alt="客服與營運工作台概念圖"
-          width="1672"
-          height="941"
-          fetchpriority="high"
-        />
-        <figcaption>營運與客服工作台 / 概念示意</figcaption>
-      </figure>
     </section>
-
     <section id="selected-work" class="work-section">
-      <div class="section-title">
-        <h2>三套系統，三種工作場景。</h2>
-        <span>Selected work</span>
-      </div>
-      <div class="project-grid">
-        <RouterLink
-          v-for="(project, index) in ordered"
-          :key="project.slug"
-          :to="`/projects/${project.slug}`"
-          class="project-tile"
-          :class="{ featured: index === 0 }"
-        >
-          <div class="tile-image">
+      <div class="section-title"><h2>Projects</h2></div>
+      <div class="work-projects">
+        <article v-for="project in projects" :key="project.slug" class="work-project">
+          <RouterLink :to="project.demo" class="work-preview" :aria-label="`體驗${project.title}`">
             <img
               :src="asset(project.image)"
               :alt="project.imageAlt"
+              width="1440"
+              height="900"
               loading="lazy"
-              width="1672"
-              height="941"
             />
+          </RouterLink>
+          <div class="work-project-text">
+            <p class="work-role">{{ project.role }}</p>
+            <h3>{{ project.title }}</h3>
+            <p class="work-summary">{{ project.summary }}</p>
+            <div class="work-project-links">
+              <RouterLink :to="project.demo">
+                開啟展示
+                <AppIcon name="ArrowRight" :size="15" />
+              </RouterLink>
+              <RouterLink :to="`/projects/${project.slug}`">閱讀案例</RouterLink>
+            </div>
           </div>
-          <div class="tile-copy">
-            <span class="project-category">{{ project.category }}</span>
-            <h3>
-              {{ project.title }}
-              <AppIcon name="ArrowRight" :size="25" />
-            </h3>
-            <p>{{ project.summary }}</p>
-            <span class="tile-link">查看案例與互動展示</span>
-          </div>
-        </RouterLink>
+        </article>
       </div>
     </section>
-
-    <section class="engineering-note">
-      <AppIcon name="Collection" :size="36" />
+    <section class="work-practice">
+      <h2>不只列功能，也說明怎麼完成。</h2>
       <div>
-        <h2>讓操作，替能力說話。</h2>
-        <p>
-          每個案例包含我的負責範圍、開發思考與可操作的展示版。你可以建立一筆訂單、接手客服會話，或調整門店庫存。
-        </p>
-      </div>
-      <div class="stack-labels">
-        <span>Vue 3</span>
-        <span>JavaScript</span>
-        <span>Pinia</span>
-        <span>Element Plus</span>
-        <span>Vue Query</span>
+        <p>每個案例分別說明負責範圍、遇到的問題、實作決策，以及可以親自操作的代表流程。</p>
+        <p>商城後台與 POS 後台是兩套不同產品。聊天工作台與可調整看板，則是這次展示的重點。</p>
       </div>
     </section>
     <aside class="disclosure">
-      <strong>關於這份展示</strong>
+      <strong>公開展示的範圍</strong>
       <p>
-        依實務開發經驗獨立重製，使用虛構品牌與資料。功能範圍及模擬限制皆於案例頁說明；不包含公司原始碼、API
-        或真實營運資料。
+        依開發經驗重新實作，替換公司品牌、會員、商品、交易及營運資料。不提供公司原始碼、內部
+        API、帳號或正式環境存取；案例中的模擬限制另有標示。
       </p>
     </aside>
   </main>

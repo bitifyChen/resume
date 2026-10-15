@@ -2,30 +2,8 @@
   .chat-workspace {
     grid-template-columns: 300px minmax(350px, 1fr) 290px;
   }
-  .admin-main {
-    padding: 40px;
-  }
 }
 @media (max-width: 1279px) {
-  .admin-frame {
-    grid-template-columns: 190px minmax(0, 1fr);
-  }
-  .admin-sidebar {
-    padding-inline: 10px;
-  }
-  .admin-brand {
-    gap: 9px;
-    padding-inline: 4px;
-  }
-  .admin-brand small {
-    font-size: 7px;
-  }
-  .admin-main {
-    padding: 25px;
-  }
-  .admin-topbar {
-    padding-inline: 25px;
-  }
   .chat-workspace {
     grid-template-columns: 235px minmax(280px, 1fr);
   }
@@ -35,53 +13,16 @@
   .mobile-member-button {
     display: inline-flex;
   }
-  .dashboard-grid {
-    grid-template-columns: minmax(0, 1fr) 250px;
-  }
-  .metric {
-    padding: 18px;
-  }
   .permissions-layout {
     grid-template-columns: 205px minmax(0, 1fr);
-  }
-  .topbar-location {
-    gap: 8px;
-  }
-  .topbar-actions {
-    gap: 10px;
-  }
-  .el-select.store-switch {
-    width: 170px;
-  }
-  .el-select.role-switch {
-    width: 125px;
   }
 }
 @media (max-width: 1023px) {
   .page-container {
     width: calc(100% - 48px);
   }
-  .home-hero {
-    gap: 30px;
-    padding-block: 50px;
-  }
-  .hero-copy h1 {
-    font-size: 35px;
-  }
-  .hero-visual {
-    transform: none;
-  }
   .hero-intro {
     font-size: 13px;
-  }
-  .project-tile.featured .tile-copy {
-    padding: 28px;
-  }
-  .engineering-note {
-    grid-template-columns: 35px 1fr;
-  }
-  .engineering-note .stack-labels {
-    grid-column: 2;
   }
   .case-content {
     gap: 40px;
@@ -89,49 +30,6 @@
   .case-heading .button {
     position: static;
     margin-top: 25px;
-  }
-  .admin-frame {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .admin-sidebar {
-    position: fixed;
-    inset: 40px auto 0 0;
-    width: 230px;
-    z-index: 40;
-    transform: translateX(-100%);
-    transition: transform 0.2s;
-  }
-  .admin-sidebar.is-open {
-    transform: translateX(0);
-  }
-  .sidebar-backdrop {
-    display: block;
-    position: fixed;
-    inset: 40px 0 0;
-    border: 0;
-    background: rgb(22 35 26 / 40%);
-    z-index: 35;
-  }
-  .mobile-menu {
-    display: inline-flex;
-  }
-  .admin-topbar {
-    min-height: 64px;
-  }
-  .metric-grid {
-    gap: 12px;
-  }
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-  .stock-panel {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0 25px;
-  }
-  .stock-panel > header,
-  .stock-panel > a {
-    grid-column: 1 / -1;
   }
   .chat-workspace {
     height: calc(100dvh - 225px);
@@ -169,65 +67,15 @@
   .site-header nav a:first-child {
     display: none;
   }
-  .home-hero {
-    grid-template-columns: 1fr;
-    gap: 36px;
-    padding-block: 40px 48px;
-  }
-  .hero-copy h1 {
-    font-size: clamp(32px, 7.8vw, 47px);
-    margin-top: 18px;
-  }
   .hero-intro {
     font-size: 14px;
     margin-top: 20px;
-  }
-  .hero-copy .button {
-    margin-top: 24px;
-  }
-  .hero-visual figcaption {
-    font-size: 10px;
   }
   .section-title h2 {
     font-size: 21px;
   }
   .section-title > span {
     display: none;
-  }
-  .project-grid {
-    grid-template-columns: 1fr;
-    gap: 23px;
-  }
-  .project-tile.featured {
-    grid-template-columns: 1fr;
-    grid-column: auto;
-  }
-  .project-tile.featured .tile-image {
-    order: 0;
-  }
-  .project-tile.featured .tile-copy,
-  .tile-copy {
-    padding: 25px;
-  }
-  .project-tile.featured .tile-copy h3,
-  .tile-copy h3 {
-    font-size: 25px;
-  }
-  .tile-copy p {
-    font-size: 13px;
-  }
-  .engineering-note {
-    padding-block: 30px;
-    gap: 20px;
-  }
-  .engineering-note > .el-icon {
-    width: 30px;
-  }
-  .engineering-note h2 {
-    font-size: 21px;
-  }
-  .engineering-note p {
-    font-size: 13px;
   }
   .disclosure {
     grid-template-columns: 1fr;
@@ -304,40 +152,6 @@
   .demo-actions .text-button {
     font-size: 10px;
   }
-  .admin-topbar {
-    flex-wrap: wrap;
-    padding: 12px 15px;
-    gap: 12px;
-  }
-  .topbar-location {
-    font-size: 11px;
-    gap: 8px;
-  }
-  .topbar-location .mobile-menu {
-    width: 26px;
-    height: 28px;
-  }
-  .topbar-actions {
-    gap: 6px;
-  }
-  .topbar-actions > .avatar {
-    display: none;
-  }
-  .pos-app .topbar-actions {
-    width: 100%;
-    margin-left: 33px;
-  }
-  .el-select.store-switch {
-    flex: 1;
-    max-width: 210px;
-    min-width: 0;
-  }
-  .el-select.role-switch {
-    width: 130px;
-  }
-  .admin-main {
-    padding: 22px 15px;
-  }
   .page-heading {
     align-items: flex-start;
     flex-wrap: wrap;
@@ -392,9 +206,6 @@
   }
   .table-pagination .el-pager li {
     min-width: 24px;
-  }
-  .admin-main.chat-main {
-    padding: 20px 12px 12px;
   }
   .chat-page-heading h1 {
     font-size: 21px;
@@ -504,39 +315,6 @@
     width: 29px;
     height: 29px;
   }
-  .store-hero {
-    margin: 15px 15px 0;
-  }
-  .store-hero > img {
-    height: 380px;
-    object-position: 62% center;
-    filter: brightness(0.9);
-  }
-  .store-hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      rgb(224 227 224 / 98%) 0,
-      rgb(224 227 224 / 55%) 43%,
-      transparent 80%
-    );
-    pointer-events: none;
-  }
-  .store-hero-copy {
-    left: 7%;
-    z-index: 1;
-  }
-  .store-hero h1 {
-    font-size: 32px;
-  }
-  .store-hero-copy .eyebrow {
-    font-size: 8px;
-  }
-  .store-hero-copy > p:not(.eyebrow) {
-    font-size: 11px;
-  }
   .campaign-bar {
     margin-inline: 15px;
     padding-block: 18px;
@@ -606,35 +384,8 @@
   .store-footer > a {
     margin-left: auto;
   }
-  .metric-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  .metric {
-    padding: 16px;
-  }
-  .metric > strong {
-    font-size: 24px;
-    margin-block: 17px 9px;
-  }
-  .metric > div {
-    font-size: 11px;
-  }
-  .metric p,
-  .metric > a {
-    font-size: 9px;
-  }
-  .dashboard-panel {
-    padding: 18px 14px;
-  }
-  .dashboard-panel h2 {
-    font-size: 15px;
-  }
   .sales-chart {
     height: 240px;
-  }
-  .stock-panel {
-    grid-template-columns: 1fr;
   }
   .inventory-hint {
     gap: 8px;

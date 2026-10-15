@@ -5,13 +5,29 @@ export const projects = [
     subtitle: '讓複雜流程，成為自然的購物體驗。',
     english: 'Consumer commerce',
     category: '消費者前台',
-    image: 'images/everyday.png',
-    imageAlt: '為展示商城生成的日常用品商品攝影',
-    coverNote: 'AI 生成商品示意，非原公司素材',
+    image: 'images/storefront-demo.jpg',
+    imageAlt: '商城重製版實際畫面：分類、活動輪播與熱銷商品',
+    coverNote: '重製版實際畫面。保留原產品的版型與操作結構，品牌、商品及圖片另行替換。',
     icon: 'ShoppingBag',
     demo: '/demo/storefront',
     role: '前端功能開發與既有流程改善',
-    summary: '從會員、商品到限時活動，整理消費者在桌機與手機上的操作流程。',
+    summary: '開發桌機與手機購物流程，串接會員、商品與限時活動的不同狀態。',
+    resumeLine:
+      '參與商城前端開發，實作會員驗證、限時活動與錢包相關介面，維護桌機及行動版的操作流程。',
+    workHighlights: [
+      {
+        title: '一套業務，兩種使用情境',
+        problem: '桌機商品導覽與手機觸控介面，不能只靠縮小版面處理。',
+        decision: '分別組織桌機與行動版頁面、導覽及商品元件，依裝置安排操作入口。',
+        result: '桌機保留分類選單與資訊密度，手機提供分類捷徑與觸控瀏覽。'
+      },
+      {
+        title: '讓活動與會員狀態有明確回饋',
+        problem: '登入驗證、活動時間與商品可購買狀態會改變下一步操作。',
+        decision: '實作驗證相關流程、限時活動列表與商品詳情，處理倒數與不同狀態的介面。',
+        result: '使用者能從畫面辨識目前狀態與可執行操作，而不是遇到無回饋的入口。'
+      }
+    ],
     responsibilities: [
       '開發會員登入、註冊、邀請碼及驗證相關流程。',
       '開發限時活動列表、商品詳情與倒數狀態。',
@@ -20,19 +36,19 @@ export const projects = [
     challenge:
       '會員狀態、庫存、活動時間與付款資訊交互影響，介面需要讓使用者知道現在能做什麼，以及下一步要做什麼。',
     approach:
-      '把商品、購物袋與訂單資料獨立管理；將庫存檢查和結帳規則集中於資料層，讓頁面專注於呈現與互動。',
+      '把商品、購物車與訂單資料獨立管理；將庫存檢查和結帳規則集中於資料層，讓頁面專注於呈現與互動。',
     outcomes: [
-      '串起商品瀏覽、選擇數量、購物袋與建立訂單的操作流程。',
+      '串起商品瀏覽、選擇數量、購物車與建立訂單的操作流程。',
       '在售罄、已下架與庫存不足時提供明確回饋。',
       '以共用資料狀態，讓新訂單可在商城後台查詢。'
     ],
     steps: [
       { title: '挑選商品', description: '依分類、關鍵字或限時選品找到商品。' },
-      { title: '加入購物袋', description: '檢視商品詳情與庫存，調整購買數量。' },
+      { title: '加入購物車', description: '檢視商品詳情與庫存，調整購買數量。' },
       { title: '展示結帳', description: '填寫虛構收件資訊，建立可於後台查詢的示範訂單。' }
     ],
     engineering: [
-      '商品資訊與購物袋衍生狀態使用 computed 計算。',
+      '商品資訊與購物車衍生狀態使用 computed 計算。',
       '結帳以單次資料操作檢查全部品項，失敗時不扣庫存。',
       '活動倒數由儲存的結束時間計算，卸載頁面時清除計時器。'
     ],
@@ -45,13 +61,30 @@ export const projects = [
     subtitle: '把客服、會員與訂單，放在同一個工作脈絡。',
     english: 'Commerce operations',
     category: '營運與客服',
-    image: 'images/commerce-admin.png',
-    imageAlt: '商城後台客服工作台概念封面',
-    coverNote: 'AI 概念封面，實際 Demo 為獨立重製介面',
+    image: 'images/commerce-chat-demo.jpg',
+    imageAlt: '商城後台重製版實際畫面：深藍側欄與藍白三欄客服工作台',
+    coverNote: '重製版實際畫面。依原工作台的三欄布局與右側資訊流程重新實作，使用虛構會話。',
     icon: 'ChatDotRound',
     demo: '/demo/commerce-admin/chat',
     role: '後台前端主責開發',
-    summary: '主責營運後台核心模組，以完整客服工作台展示跨模組整合與狀態管理。',
+    summary: '主責商城後台前端，將客服聊天、會員查詢與訂單處理整合成連續工作流程。',
+    resumeLine:
+      '主責商城後台前端開發，建置客服聊天工作台，整合會話指派、訊息互動與會員／訂單側邊資訊，並維護商品、會員及訂單管理模組。',
+    workHighlights: [
+      {
+        title: '客服不用離開對話，就能查完問題',
+        problem: '客服需要同時查看會話、會員身分與訂單脈絡；跨頁查詢容易中斷回覆。',
+        decision: '建立會話列表、訊息與會員資訊三欄布局，讓摘要、會員詳情與訂單在右側面板切換。',
+        result: '查詢資料與回覆訊息留在同一工作區，保留目前會話的上下文。'
+      },
+      {
+        title: '聊天不只是「送出文字」',
+        problem: '多人客服、歷史訊息與即時更新，需要處理參與權限、未讀及訊息狀態。',
+        decision: '實作會話指派與加入、歷史訊息載入、WebSocket 更新，以及訊息編輯、收回等互動。',
+        result:
+          '將聊天完成為可持續工作的客服流程，而非單一訊息輸入介面；公開版以本機事件模擬即時服務。'
+      }
+    ],
     responsibilities: [
       '主責會員、商品、訂單與營運相關後台模組。',
       '建置客服會話、訊息互動及會員／訂單資訊整合流程。',
@@ -88,13 +121,29 @@ export const projects = [
     subtitle: '從營運概況，到每一筆庫存調整。',
     english: 'Retail operations',
     category: '門店與庫存',
-    image: 'images/pos-admin.png',
-    imageAlt: '零售 POS 營運與庫存管理概念封面',
-    coverNote: 'AI 概念封面，實際 Demo 為獨立重製介面',
+    image: 'images/pos-dashboard-demo.jpg',
+    imageAlt: 'POS 後台重製版實際畫面：門店營運看板與單據摘要',
+    coverNote: '重製版實際畫面。保留原看板配置與卡片編排方式，數值與單據均為虛構。',
     icon: 'Grid',
     demo: '/demo/pos-admin/dashboard',
     role: '後台前端主責開發',
-    summary: '主責零售後台核心模組，整合門店、商品、庫存、營運概況與角色權限。',
+    summary: '主責獨立 POS 後台前端，整合可調整營運看板、門店商品、庫存與角色權限。',
+    resumeLine:
+      '主責 POS 後台前端開發，建置可拖曳排序與調整尺寸的營運看板，整合門店、商品、庫存管理及角色權限，並開發批次匯入匯出流程。',
+    workHighlights: [
+      {
+        title: '看板依工作需求安排，而非固定排版',
+        problem: '門店需要同時掌握營收、訂單、商品與進退調撥等不同單據。',
+        decision: '以卡片組織營運資訊，提供編輯模式、拖曳排序、尺寸調整與重設配置。',
+        result: '把多種營運摘要集中在同一看板，讓使用者自行安排資訊的順序與空間。'
+      },
+      {
+        title: '把重複管理操作整理成一致流程',
+        problem: '商品、庫存、匯入匯出與角色管理各有規則，但操作方式需要一致。',
+        decision: '實作管理表格、搜尋與分頁、編輯介面及權限判斷，讓門店資料與可操作功能互相對應。',
+        result: '在不同管理模組間維持相近的查詢與編輯體驗，減少反覆理解操作方式。'
+      }
+    ],
     responsibilities: [
       '主責商品、庫存、門店、銷售與營運 Dashboard 等模組。',
       '開發匯入匯出、付款及幣別相關管理介面。',
@@ -109,7 +158,10 @@ export const projects = [
       '切換角色即可觀察導覽、編輯及匯出權限的差異。'
     ],
     steps: [
-      { title: '掌握營運', description: '切換門店與報表期間，檢視營收、訂單與低庫存提醒。' },
+      {
+        title: '安排營運看板',
+        description: '進入編輯模式，排序卡片或調整尺寸，再切換門店查看配置。'
+      },
       { title: '管理庫存', description: '搜尋商品、調整數量，或預覽 CSV 匯入結果後套用。' },
       { title: '體驗權限', description: '調整店長及夥伴角色，再切換角色觀察功能變化。' }
     ],

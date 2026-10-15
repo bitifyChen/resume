@@ -1,12 +1,15 @@
 <script setup>
-  import { computed, watch } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { computed, ref, watch } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
   import { useSessionStore } from '@/store/useSessionStore'
   import { useDemoData } from '@/hook/useDemoData'
   import DemoBar from '@/components/Shared/DemoBar.vue'
   import AppIcon from '@/components/Shared/AppIcon.vue'
   const session = useSessionStore()
   const route = useRoute()
+  const router = useRouter()
+  const collapsed = ref(true)
+  const visited = ref([])
   const { database, allowed } = useDemoData()
   const isPos = computed(() => route.meta.system === 'pos')
   const links = computed(() =>
@@ -23,18 +26,38 @@
         ]
   )
   const basePath = computed(() => (isPos.value ? '/demo/pos-admin' : '/demo/commerce-admin'))
+  const currentLink = computed(() => links.value.find((link) => route.path.endsWith(link.path)))
+  const tabs = computed(() =>
+    visited.value.filter((tab) =>
+      links.value.some((link) => tab.path === `${basePath.value}/${link.path}`)
+    )
+  )
+  function toggleSidebar() {
+    if (window.matchMedia('(max-width: 767px)').matches) session.sidebarOpen = !session.sidebarOpen
+    else collapsed.value = !collapsed.value
+  }
+  function closeTab(path) {
+    const index = tabs.value.findIndex((tab) => tab.path === path)
+    const adjacent = tabs.value[index - 1] || tabs.value[index + 1]
+    visited.value = visited.value.filter((tab) => tab.path !== path)
+    if (route.path === path && adjacent) router.push(adjacent.path)
+  }
   watch(
     () => route.fullPath,
     () => {
       session.sidebarOpen = false
-    }
+      if (!visited.value.some((tab) => tab.path === route.path)) {
+        visited.value.push({ path: route.path, label: route.meta.title })
+      }
+    },
+    { immediate: true }
   )
 </script>
 
 <template>
   <div class="admin-app" :class="{ 'pos-app': isPos }">
     <DemoBar :project="isPos ? 'pos-admin' : 'commerce-admin'" />
-    <div class="admin-frame">
+    <div class="admin-frame" :class="{ 'nav-collapsed': collapsed }">
       <button
         v-if="session.sidebarOpen"
         class="sidebar-backdrop"
@@ -53,7 +76,13 @@
         </RouterLink>
         <span class="sidebar-section-label">{{ isPos ? '門店營運' : '商城管理' }}</span>
         <nav aria-label="後台功能">
-          <RouterLink v-for="link in links" :key="link.path" :to="`${basePath}/${link.path}`">
+          <RouterLink
+            v-for="link in links"
+            :key="link.path"
+            :to="`${basePath}/${link.path}`"
+            :title="link.label"
+            :aria-label="link.label"
+          >
             <AppIcon :name="link.icon" :size="19" />
             <span>{{ link.label }}</span>
             <span v-if="link.path === 'chat'" class="nav-count">
@@ -64,11 +93,11 @@
         <div class="sidebar-bottom">
           <RouterLink :to="isPos ? '/demo/commerce-admin/chat' : '/demo/pos-admin/dashboard'">
             <AppIcon name="Switch" :size="18" />
-            {{ isPos ? '前往商城後台' : '前往 POS 後台' }}
+            <span>{{ isPos ? '前往商城後台' : '前往 POS 後台' }}</span>
           </RouterLink>
           <RouterLink to="/demo/storefront">
             <AppIcon name="ShoppingBag" :size="18" />
-            前往商城
+            <span>前往商城</span>
           </RouterLink>
           <p>獨立重製 / 虛構品牌</p>
         </div>
@@ -77,14 +106,16 @@
         <header class="admin-topbar">
           <div class="topbar-location">
             <button
-              class="icon-button mobile-menu"
-              aria-label="開啟導覽"
-              @click="session.sidebarOpen = !session.sidebarOpen"
+              class="icon-button admin-menu-toggle"
+              aria-label="展開或收合導覽"
+              :aria-expanded="session.sidebarOpen || !collapsed"
+              @click="toggleSidebar"
             >
               <AppIcon name="Menu" />
             </button>
-            <span>{{ isPos ? 'POS 後台' : '商城後台' }}</span>
-            <span class="breadcrumb-divider">/</span>
+          </div>
+          <div class="admin-page-title">
+            <AppIcon :name="currentLink?.icon || 'Grid'" :size="19" />
             <strong>{{ route.meta.title }}</strong>
           </div>
           <div class="topbar-actions">
@@ -112,10 +143,37 @@
                 />
               </el-select>
             </template>
-            <span v-else class="agent-indicator">客服 / 我</span>
+            <span v-else class="agent-indicator">
+              <AppIcon name="Bell" :size="18" />
+              展示管理員
+            </span>
             <span class="avatar avatar-self">{{ isPos ? '陳' : '我' }}</span>
           </div>
         </header>
+        <div class="admin-routebar">
+          <nav class="admin-breadcrumb" aria-label="麵包屑">
+            <span>{{ isPos ? 'POS 後台' : '商城後台' }}</span>
+            <span>/</span>
+            <strong>{{ route.meta.title }}</strong>
+          </nav>
+          <nav class="admin-tabs" aria-label="已開啟頁面">
+            <div
+              v-for="tab in tabs"
+              :key="tab.path"
+              class="admin-tab"
+              :class="{ active: route.path === tab.path }"
+            >
+              <RouterLink :to="tab.path">{{ tab.label }}</RouterLink>
+              <button
+                v-if="tabs.length > 1"
+                :aria-label="`關閉${tab.label}頁籤`"
+                @click="closeTab(tab.path)"
+              >
+                <AppIcon name="Close" :size="12" />
+              </button>
+            </div>
+          </nav>
+        </div>
         <main
           id="main-content"
           class="admin-main"

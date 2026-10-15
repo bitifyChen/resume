@@ -36,13 +36,6 @@
     </span>
     <div class="demo-actions">
       <button class="text-button" :disabled="saving" @click="reset">重設資料</button>
-      <button
-        class="icon-button"
-        :aria-label="session.isDark ? '切換淺色' : '切換深色'"
-        @click="session.toggleTheme"
-      >
-        <AppIcon :name="session.isDark ? 'Sunny' : 'Moon'" :size="16" />
-      </button>
     </div>
   </div>
 </template>
