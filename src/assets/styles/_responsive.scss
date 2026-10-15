@@ -21,16 +21,6 @@
   .page-container {
     width: calc(100% - 48px);
   }
-  .hero-intro {
-    font-size: 13px;
-  }
-  .case-content {
-    gap: 40px;
-  }
-  .case-heading .button {
-    position: static;
-    margin-top: 25px;
-  }
   .chat-workspace {
     height: calc(100dvh - 225px);
     min-height: 560px;
@@ -52,90 +42,6 @@
 @media (max-width: 767px) {
   .page-container {
     width: calc(100% - 36px);
-  }
-  .site-header {
-    height: 68px;
-    gap: 14px;
-  }
-  .wordmark {
-    font-size: 21px;
-  }
-  .site-header nav {
-    gap: 16px;
-    font-size: 11px;
-  }
-  .site-header nav a:first-child {
-    display: none;
-  }
-  .hero-intro {
-    font-size: 14px;
-    margin-top: 20px;
-  }
-  .section-title h2 {
-    font-size: 21px;
-  }
-  .section-title > span {
-    display: none;
-  }
-  .disclosure {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding-bottom: 30px;
-  }
-  .site-footer {
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-  .site-footer p {
-    order: 3;
-    width: 100%;
-    margin-left: 0;
-    font-size: 10px;
-  }
-  .site-footer .text-button {
-    margin-left: auto;
-  }
-  .case-heading {
-    padding-block: 28px;
-  }
-  .case-heading h1 {
-    font-size: 40px;
-  }
-  .case-heading > p:not(.eyebrow) {
-    font-size: 16px;
-  }
-  .case-cover img {
-    border-radius: 8px;
-  }
-  .case-cover figcaption {
-    font-size: 10px;
-  }
-  .case-content {
-    grid-template-columns: 1fr;
-    gap: 35px;
-    padding-block: 32px;
-  }
-  .case-meta p {
-    max-width: none;
-  }
-  .walkthrough-grid {
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
-  .walkthrough-grid h3 {
-    margin-block: 5px 8px;
-  }
-  .walkthrough-grid article > .el-icon {
-    display: none;
-  }
-  .case-body h2,
-  .case-engineering h2 {
-    font-size: 20px;
-  }
-  .case-body p,
-  .case-body li,
-  .case-engineering li {
-    font-size: 14px;
   }
   .demo-bar {
     height: 38px;

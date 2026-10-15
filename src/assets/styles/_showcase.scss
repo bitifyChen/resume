@@ -1,484 +1,770 @@
+/* Interview portfolio: Chenchen's soft rose / heavy type, with short, issue-first reading.
+   DESIGN_VARIANCE 5, MOTION_INTENSITY 3, VISUAL_DENSITY 5.
+   This layer only owns the portfolio. Product demos retain their existing identity. */
+:root[data-product=''] {
+  --page: #f1e3de;
+  --surface: #fffaf7;
+  --surface-muted: #e8d8d1;
+  --ink: #252221;
+  --muted: #695b55;
+  --line: #ccb9b0;
+  --accent: #714438;
+  --accent-soft: #ead3ca;
+}
+:root[data-product=''][data-theme='dark'] {
+  --page: #221e1d;
+  --surface: #2b2523;
+  --surface-muted: #342c29;
+  --ink: #f5e9e3;
+  --muted: #c3b2a9;
+  --line: #625047;
+  --accent: #e9b3a0;
+  --accent-soft: #4a342c;
+}
 .wordmark {
-  font-size: 23px;
-  font-weight: 850;
-  letter-spacing: -1px;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -1.1px;
   white-space: nowrap;
 }
 .wordmark span {
-  margin-left: 5px;
   color: var(--accent);
+  margin-left: 4px;
 }
 .site-header {
+  height: 72px;
   display: flex;
   align-items: center;
-  height: 80px;
-  gap: 34px;
+  gap: 26px;
   border-bottom: 1px solid var(--line);
+  background: var(--page);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 .site-header nav {
   display: flex;
-  align-items: center;
-  gap: 30px;
+  gap: 28px;
   margin-left: auto;
+  align-items: center;
   font-size: 13px;
 }
 .site-header nav a {
   display: inline-flex;
+  gap: 6px;
   align-items: center;
-  gap: 8px;
 }
 .site-header nav a:hover {
   color: var(--accent);
 }
-.eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--muted);
+.site-header .icon-button {
+  flex-shrink: 0;
 }
-.hero-intro {
-  margin-top: 24px;
-  font-size: 15px;
-  line-height: 1.9;
-  color: var(--muted);
+.portfolio-index {
+  padding-bottom: 10px;
 }
-.work-section {
-  padding-bottom: 68px;
-  scroll-margin-top: 32px;
+.projects-intro {
+  padding: 34px 0 28px;
 }
-.section-title {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 27px;
-}
-.section-title h2 {
-  font-size: 24px;
-  letter-spacing: -0.02em;
-}
-.section-title > span {
-  color: var(--muted);
+.projects-intro > p:first-child {
   font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 3px;
 }
-.stack-labels {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.projects-intro h1 {
+  font-size: clamp(52px, 6vw, 78px);
+  letter-spacing: -0.065em;
+  font-weight: 800;
+  line-height: 1.14;
 }
-.stack-labels span {
-  display: block;
-  border: 1px solid var(--line);
-  padding: 4px 10px;
-  font-size: 11px;
-  border-radius: 4px;
+.projects-intro > p:last-child {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 14px;
 }
-.disclosure {
+.project-entries {
   display: grid;
-  grid-template-columns: 160px 1fr;
-  gap: 25px;
-  padding: 25px 0 45px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 45px 34px;
+}
+.project-entry {
+  min-width: 0;
+}
+.project-entry-preview {
+  display: block;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.project-entry-preview img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.6;
+  object-fit: contain;
+  border-radius: 3px;
+  transition: transform 0.2s;
+}
+.project-entry-preview:hover img {
+  transform: translateY(-2px);
+}
+.project-entry-content {
+  padding-top: 20px;
+  min-width: 0;
+}
+.project-entry-role {
   color: var(--muted);
   font-size: 12px;
 }
-.disclosure strong {
-  font-weight: 600;
+.project-entry h2 {
+  font-size: 31px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  margin: 7px 0 11px;
 }
-.disclosure p {
-  max-width: 63em;
+.project-entry-summary {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.project-entry-issues {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+}
+.project-entry-issues li + li {
+  margin-top: 5px;
+}
+.project-entry-issues a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+.project-entry-issues strong {
+  font-size: 15px;
+  font-weight: 650;
+  display: block;
+}
+.project-entry-issues small {
+  color: var(--muted);
+  font-size: 12px;
+  display: block;
+  margin-top: 4px;
+}
+.project-entry-issues a:hover {
+  color: var(--accent);
+}
+.project-entry-issues .el-icon {
+  transition: transform 0.2s;
+}
+.project-entry-issues a:hover .el-icon {
+  transform: translateX(4px);
+}
+.entry-commerce-admin {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1.13fr 1fr;
+  gap: 46px;
+  align-items: center;
+}
+.entry-commerce-admin .project-entry-content {
+  padding: 0;
+}
+.entry-commerce-admin h2 {
+  font-size: 34px;
+}
+.portfolio-disclosure {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 18px;
+  padding: 28px 0;
+  margin-top: 36px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+}
+.portfolio-disclosure strong {
+  font-weight: 600;
 }
 .site-footer {
   border-top: 1px solid var(--line);
+  padding-block: 22px;
   display: flex;
   align-items: center;
-  gap: 25px;
-  padding-block: 24px;
-  font-size: 12px;
+  gap: 24px;
 }
 .site-footer p {
   margin-left: auto;
   color: var(--muted);
-}
-.back-link {
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 13px;
-  margin-top: 28px;
-  color: var(--muted);
-}
-.case-heading {
-  position: relative;
-  padding-block: 42px 36px;
-}
-.case-heading h1 {
-  font-size: 54px;
-  letter-spacing: -0.04em;
-  margin-block: 15px;
-}
-.case-heading > p:not(.eyebrow) {
-  font-size: 18px;
-  color: var(--muted);
-  max-width: 36em;
-}
-.case-heading .button {
-  position: absolute;
-  right: 0;
-  bottom: 36px;
-}
-.case-cover img {
-  width: 100%;
-  max-height: 560px;
-  object-fit: cover;
-  border-radius: 12px;
-}
-.case-cover figcaption {
   font-size: 11px;
+}
+.site-footer .text-button {
+  font-size: 12px;
+}
+.project-case {
+  padding-bottom: 42px;
+  scroll-margin-top: 90px;
+}
+.project-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 25px;
+}
+.project-back:hover {
+  color: var(--accent);
+}
+.project-case-heading {
+  padding: 21px 0 30px;
+  border-bottom: 1px solid var(--line);
+}
+.project-case-heading h1 {
+  font-size: clamp(34px, 3.4vw, 46px);
+  line-height: 1.3;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.project-case-heading > p {
+  font-size: 15px;
   color: var(--muted);
   margin-top: 12px;
 }
-.case-content {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 70px;
-  padding-block: 60px;
+.project-case-meta {
+  display: flex;
+  gap: 26px;
+  font-size: 12px;
+  margin-top: 19px;
+  color: var(--muted);
 }
-.case-meta > span {
+.project-case-layout {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 45px;
+  padding-top: 30px;
+  align-items: start;
+}
+.project-contents {
+  position: sticky;
+  top: 100px;
+}
+.project-contents nav > p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 15px;
+}
+.project-contents nav > a {
+  display: block;
+  padding: 12px 13px;
+  margin-left: -13px;
+  border-left: 2px solid transparent;
+  border-radius: 0 4px 4px 0;
+}
+.project-contents nav > a + a {
+  margin-top: 8px;
+}
+.project-contents nav strong {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 600;
+  display: block;
+}
+.project-contents nav small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 5px;
+}
+.project-contents nav > a.active {
+  background: var(--surface);
+  border-left-color: var(--accent);
+  color: var(--accent);
+}
+.project-contents nav > a:hover {
+  background: var(--surface-muted);
+}
+.comparison-disclaimer {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 26px;
+  line-height: 1.9;
+  max-width: 20em;
+}
+.project-issue-content {
+  min-width: 0;
+}
+.issue-heading h2 {
+  font-size: clamp(23px, 2.2vw, 29px);
+  line-height: 1.5;
+  letter-spacing: -0.025em;
+  font-weight: 750;
+}
+.issue-heading > p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 10px;
+}
+.issue-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 24px;
+}
+.issue-comparison > section {
+  padding: 20px;
+  background: var(--surface-muted);
+  border-radius: 6px;
+}
+.issue-comparison .comparison-after {
+  background: var(--surface);
+}
+.comparison-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.comparison-label span {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.issue-comparison h3 {
+  font-size: 17px;
+  font-weight: 650;
+  margin-top: 14px;
+  line-height: 1.5;
+}
+.issue-comparison section > p:not(.comparison-label) {
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--muted);
+  margin-top: 9px;
+}
+.issue-comparison ol {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 15px;
+  margin: 17px 0 0;
+}
+.issue-comparison li {
+  font-size: 11px;
+  color: var(--muted);
+  padding-left: 9px;
+  border-left: 1px solid var(--line);
+}
+.issue-evidence {
+  margin-top: 26px;
+}
+.evidence-toolbar {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 11px;
+  min-height: 30px;
+}
+.evidence-toolbar > span {
   font-size: 12px;
   color: var(--muted);
 }
-.case-meta h2 {
-  font-size: 22px;
-  margin-block: 13px;
-}
-.case-meta p {
-  font-size: 14px;
+.evidence-expand {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 5px 0;
+  font-size: 11px;
   color: var(--muted);
-  max-width: 24em;
+  border: 0;
+  background: transparent;
+  white-space: nowrap;
 }
-.case-meta .stack-labels {
-  margin-top: 25px;
+.evidence-views {
+  display: flex;
+  gap: 3px;
 }
-.case-body h2,
-.case-engineering h2 {
-  font-size: 22px;
-  margin-block: 32px 18px;
-}
-.case-body h2:first-child {
-  margin-top: 0;
-}
-.case-body p,
-.case-body li,
-.case-engineering li {
-  font-size: 15px;
-  line-height: 1.9;
+.evidence-views button {
+  background: transparent;
+  border: 0;
+  padding: 6px 9px;
+  border-radius: 4px;
   color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
 }
-.case-body ul,
-.case-engineering ul {
-  padding-left: 20px;
+.evidence-views button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--surface);
 }
-.case-body li,
-.case-engineering li {
-  margin-block: 8px;
-}
-.walkthrough {
-  border-block: 1px solid var(--line);
-  padding-block: 40px;
-}
-.walkthrough h2 {
-  font-size: 25px;
-}
-.walkthrough-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-block: 32px;
-}
-.walkthrough-grid article {
-  border-left: 2px solid var(--line);
-  padding-left: 22px;
-}
-.walkthrough-grid h3 {
-  font-size: 18px;
-  margin-block: 14px 10px;
-}
-.walkthrough-grid p {
-  font-size: 14px;
-  color: var(--muted);
-}
-.case-engineering {
-  padding-block: 15px 50px;
-  max-width: 850px;
-}
-.boundary-note {
-  margin-top: 26px;
-  font-size: 13px;
-  padding: 18px 20px;
-  background: var(--accent-soft);
-  color: var(--muted);
-  border-radius: 6px;
-}
-.not-found {
-  min-height: 60dvh;
-  padding-block: 90px;
-}
-.not-found h1 {
-  font-size: 36px;
-  margin-block: 20px;
-}
-.not-found .button {
-  margin-top: 25px;
-}
-
-/* Case entry: actual product previews and concise purpose before the longer story.
-   Design read: developer case index for hiring managers, neutral editorial language.
-   Variance 4 / motion 2 / density 4. Three equal previews intentionally follow the supplied reference. */
-.work-intro {
-  padding: 58px 0 52px;
-}
-.work-intro > p {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 18px;
-}
-.work-intro h1 {
-  font-size: clamp(32px, 3.1vw, 46px);
-  font-weight: 750;
-  letter-spacing: -0.035em;
-  line-height: 1.4;
-}
-.work-intro-description {
-  margin-top: 22px;
-  font-size: 14px;
-  line-height: 1.9;
-  color: var(--muted);
-}
-.work-section {
-  padding-bottom: 58px;
-}
-.section-title {
-  margin-bottom: 22px;
-}
-.section-title h2 {
-  font-size: 25px;
-  font-weight: 600;
-}
-.work-projects {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
-}
-.work-project {
-  min-width: 0;
-}
-.work-preview {
+.evidence-image {
   display: block;
-  padding: 10px;
-  background: var(--surface-muted);
-  border-radius: 12px;
   border: 1px solid var(--line);
-  overflow: hidden;
+  background: #eef1f5;
+  padding: 8px;
+  width: 100%;
+  border-radius: 6px;
+  cursor: zoom-in;
 }
-.work-preview img {
+.evidence-image img {
   width: 100%;
   height: auto;
   aspect-ratio: 1.6;
-  object-fit: cover;
-  object-position: top left;
-  border-radius: 5px;
-  box-shadow: 0 3px 9px #0f172a12;
-  transition: transform 0.2s;
+  object-fit: contain;
+  display: block;
 }
-.work-preview:hover img {
-  transform: translateY(-2px);
+.evidence-image.is-portrait img {
+  height: 480px;
+  aspect-ratio: auto;
 }
-.work-project-text {
-  padding-top: 20px;
-}
-.work-role {
-  font-size: 11px;
-  color: var(--muted);
-}
-.work-project h3 {
-  font-size: 22px;
-  margin: 8px 0 12px;
-  font-weight: 650;
-}
-.work-summary {
-  font-size: 13px;
+.issue-evidence figcaption {
+  margin-top: 10px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.8;
 }
-.work-project-links {
+.issue-try {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-top: 20px;
+  gap: 22px;
+  padding: 20px 0;
+}
+.issue-try > p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-right: auto;
+}
+.issue-try .button {
+  min-height: 40px;
   font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 4px;
 }
-.work-project-links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-.work-project-links a:first-child {
-  color: var(--accent);
-  font-weight: 650;
-}
-.work-project-links a:hover {
-  text-decoration: underline;
-}
-.work-practice {
-  padding: 34px 0;
+.issue-details,
+.project-scope {
   border-top: 1px solid var(--line);
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 35px;
+  padding-block: 16px;
 }
-.work-practice h2 {
-  font-size: 23px;
-  line-height: 1.5;
-}
-.work-practice p {
-  color: var(--muted);
+.issue-details summary,
+.project-scope summary {
   font-size: 13px;
-  line-height: 1.9;
+  font-weight: 600;
+  cursor: pointer;
 }
-.work-practice p + p {
-  margin-top: 10px;
-}
-.case-work-highlights {
-  padding-bottom: 45px;
-}
-.case-work-highlights > h2 {
-  font-size: 25px;
-}
-.case-section-intro {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 14px;
-  max-width: 65em;
-}
-.case-work-highlights > article {
+.issue-details dl {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 70px;
-  padding: 32px 0;
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 16px;
+  margin: 22px 0 6px;
 }
-.case-work-highlights h3 {
-  font-size: 21px;
-  line-height: 1.5;
-  max-width: 13em;
-}
-.case-work-highlights dl {
-  display: grid;
-  grid-template-columns: 90px minmax(0, 1fr);
-  gap: 18px 16px;
-  margin: 0;
-}
-.case-work-highlights dt {
-  color: var(--ink);
+.issue-details dt {
   font-size: 12px;
-  padding-top: 3px;
+  color: var(--ink);
 }
-.case-work-highlights dd {
+.issue-details dd {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.9;
   margin: 0;
-  font-size: 14px;
+}
+.project-scope {
+  margin-top: 20px;
+}
+.project-scope ul {
+  padding-left: 20px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 2;
+  margin-block: 18px 12px;
+}
+.project-scope > p {
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.9;
 }
-.resume-summary {
-  margin-top: 32px;
-  padding: 25px 28px;
-  background: var(--surface-muted);
-  border-radius: 8px;
+.next-issue {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  justify-content: space-between;
+  padding-top: 25px;
+  margin-top: 12px;
 }
-.resume-summary h3 {
-  font-size: 15px;
-  margin-bottom: 12px;
-}
-.resume-summary p {
-  font-size: 15px;
-  line-height: 1.9;
-}
-.resume-summary small {
+.next-issue small {
   display: block;
   font-size: 11px;
   color: var(--muted);
-  margin-top: 14px;
+}
+.next-issue strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: 7px;
+}
+.next-issue:hover {
+  color: var(--accent);
+}
+.evidence-dialog .el-dialog__body {
+  padding: 0;
+}
+.evidence-dialog img {
+  width: 100%;
+  max-height: 80dvh;
+  object-fit: contain;
+}
+.not-found {
+  min-height: 65dvh;
+  padding-block: 70px;
+}
+.not-found h1 {
+  font-size: 30px;
+  margin-bottom: 25px;
 }
 @media (max-width: 1023px) {
-  .work-projects {
-    gap: 20px;
+  .entry-commerce-admin {
+    gap: 28px;
+    grid-template-columns: 1fr 1fr;
   }
-  .work-project h3 {
-    font-size: 21px;
+  .entry-commerce-admin h2 {
+    font-size: 29px;
   }
-  .work-summary {
-    font-size: 12px;
+  .project-entry h2 {
+    font-size: 28px;
   }
-  .work-project-links {
-    gap: 14px;
+  .project-entry-issues strong {
+    font-size: 14px;
+  }
+  .project-case-layout {
+    grid-template-columns: 185px minmax(0, 1fr);
+    gap: 28px;
+  }
+  .issue-comparison {
+    gap: 12px;
+  }
+  .issue-comparison > section {
+    padding: 16px;
+  }
+  .issue-comparison h3 {
+    font-size: 16px;
   }
 }
 @media (max-width: 767px) {
-  .work-intro {
-    padding: 35px 0;
+  .site-header {
+    height: 64px;
+    gap: 12px;
   }
-  .work-intro h1 {
-    font-size: 31px;
+  .wordmark {
+    font-size: 23px;
   }
-  .work-intro-description {
+  .site-header nav {
+    gap: 14px;
+    font-size: 11px;
+  }
+  .site-header .icon-button {
+    width: 29px;
+  }
+  .site-header nav a:first-child {
+    display: inline-flex;
+  }
+  .projects-intro {
+    padding: 26px 0 24px;
+  }
+  .projects-intro h1 {
+    font-size: 56px;
+  }
+  .projects-intro > p:last-child {
     font-size: 13px;
+    margin-top: 10px;
+  }
+  .project-entries {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  .entry-commerce-admin {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: stretch;
+  }
+  .entry-commerce-admin .project-entry-content {
+    padding-top: 18px;
+  }
+  .project-entry-content {
+    padding-top: 18px;
+  }
+  .project-entry h2,
+  .entry-commerce-admin h2 {
+    font-size: 28px;
+  }
+  .project-entry-summary {
+    font-size: 13px;
+  }
+  .project-entry-issues {
+    margin-top: 13px;
+  }
+  .project-entry-issues a {
+    padding-block: 10px;
+  }
+  .project-entry-issues strong {
+    font-size: 14px;
+  }
+  .portfolio-disclosure {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 28px;
+    font-size: 11px;
+  }
+  .site-footer {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .site-footer .wordmark {
+    font-size: 22px;
+  }
+  .site-footer p {
+    width: 100%;
+    order: 3;
+    margin: 0;
+    font-size: 10px;
+  }
+  .site-footer .text-button {
+    margin-left: auto;
+  }
+  .project-back {
+    margin-top: 20px;
+  }
+  .project-case-heading {
+    padding: 16px 0 22px;
+  }
+  .project-case-heading h1 {
+    font-size: 34px;
+  }
+  .project-case-heading > p {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .project-case-meta {
+    font-size: 11px;
+    gap: 16px;
+    margin-top: 15px;
+  }
+  .project-case-layout {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding-top: 22px;
+  }
+  .project-contents {
+    position: static;
+  }
+  .project-contents nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .project-contents nav > p {
+    grid-column: 1 / -1;
+    margin-bottom: 3px;
+  }
+  .project-contents nav > a {
+    margin: 0;
+    padding: 10px;
+  }
+  .project-contents nav > a + a {
+    margin-top: 0;
+  }
+  .project-contents nav strong {
+    font-size: 12px;
+  }
+  .project-contents nav small {
+    font-size: 10px;
+  }
+  .comparison-disclaimer {
+    max-width: none;
+    margin-top: 16px;
+    font-size: 10px;
+    line-height: 1.8;
+  }
+  .issue-heading h2 {
+    font-size: 23px;
+  }
+  .issue-heading > p {
+    font-size: 13px;
+  }
+  .issue-comparison {
+    grid-template-columns: 1fr;
+    margin-top: 20px;
+    gap: 10px;
+  }
+  .issue-comparison > section {
+    padding: 17px;
+  }
+  .issue-comparison h3 {
+    margin-top: 9px;
+    font-size: 17px;
+  }
+  .issue-comparison section > p:not(.comparison-label) {
+    font-size: 13px;
+  }
+  .issue-comparison ol {
+    margin-top: 12px;
+  }
+  .issue-evidence {
+    margin-top: 20px;
+  }
+  .evidence-toolbar {
+    flex-wrap: wrap;
+    gap: 5px 10px;
+  }
+  .evidence-toolbar > span {
+    font-size: 11px;
+  }
+  .evidence-views {
+    order: 3;
+    width: 100%;
+  }
+  .evidence-image {
+    padding: 4px;
+  }
+  .evidence-image.is-portrait img {
+    height: 430px;
+  }
+  .issue-evidence figcaption {
+    font-size: 11px;
+  }
+  .issue-try {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 13px;
+  }
+  .issue-try > p {
+    font-size: 12px;
+  }
+  .issue-try .button {
+    align-self: flex-start;
+  }
+  .issue-details dl {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+  .issue-details dd + dt {
+    margin-top: 10px;
+  }
+  .issue-details dd {
+    font-size: 12px;
+  }
+  .project-scope {
     margin-top: 18px;
   }
-  .work-projects {
-    grid-template-columns: 1fr;
-    gap: 36px;
-  }
-  .work-project h3 {
-    font-size: 24px;
-  }
-  .work-summary {
-    font-size: 14px;
-  }
-  .work-project-text {
-    padding-top: 16px;
-  }
-  .work-project-links {
-    margin-top: 16px;
-    font-size: 13px;
-  }
-  .work-practice {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    padding-block: 28px;
-  }
-  .work-practice h2 {
-    font-size: 21px;
-  }
-  .case-work-highlights > article {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding-block: 28px;
-  }
-  .case-work-highlights h3 {
-    font-size: 20px;
-    max-width: none;
-  }
-  .case-work-highlights dl {
-    grid-template-columns: 70px minmax(0, 1fr);
-    gap: 14px 12px;
-  }
-  .case-work-highlights dd {
-    font-size: 13px;
-  }
-  .resume-summary {
-    padding: 20px;
-  }
-  .resume-summary p {
-    font-size: 14px;
+  .next-issue strong {
+    font-size: 15px;
   }
 }

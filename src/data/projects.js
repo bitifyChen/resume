@@ -1,177 +1,287 @@
+// Before describes a reconstructed problem scenario, not a claim about a historical release.
+export const comparisonNote =
+  'Before 為問題情境重建；After 為目前方案的去識別重製，並非公司舊版截圖。'
+
 export const projects = [
-  {
-    slug: 'storefront',
-    title: '商城',
-    subtitle: '讓複雜流程，成為自然的購物體驗。',
-    english: 'Consumer commerce',
-    category: '消費者前台',
-    image: 'images/storefront-demo.jpg',
-    imageAlt: '商城重製版實際畫面：分類、活動輪播與熱銷商品',
-    coverNote: '重製版實際畫面。保留原產品的版型與操作結構，品牌、商品及圖片另行替換。',
-    icon: 'ShoppingBag',
-    demo: '/demo/storefront',
-    role: '前端功能開發與既有流程改善',
-    summary: '開發桌機與手機購物流程，串接會員、商品與限時活動的不同狀態。',
-    resumeLine:
-      '參與商城前端開發，實作會員驗證、限時活動與錢包相關介面，維護桌機及行動版的操作流程。',
-    workHighlights: [
-      {
-        title: '一套業務，兩種使用情境',
-        problem: '桌機商品導覽與手機觸控介面，不能只靠縮小版面處理。',
-        decision: '分別組織桌機與行動版頁面、導覽及商品元件，依裝置安排操作入口。',
-        result: '桌機保留分類選單與資訊密度，手機提供分類捷徑與觸控瀏覽。'
-      },
-      {
-        title: '讓活動與會員狀態有明確回饋',
-        problem: '登入驗證、活動時間與商品可購買狀態會改變下一步操作。',
-        decision: '實作驗證相關流程、限時活動列表與商品詳情，處理倒數與不同狀態的介面。',
-        result: '使用者能從畫面辨識目前狀態與可執行操作，而不是遇到無回饋的入口。'
-      }
-    ],
-    responsibilities: [
-      '開發會員登入、註冊、邀請碼及驗證相關流程。',
-      '開發限時活動列表、商品詳情與倒數狀態。',
-      '整合錢包、QR Code 與商品資訊呈現，改善響應式體驗。'
-    ],
-    challenge:
-      '會員狀態、庫存、活動時間與付款資訊交互影響，介面需要讓使用者知道現在能做什麼，以及下一步要做什麼。',
-    approach:
-      '把商品、購物車與訂單資料獨立管理；將庫存檢查和結帳規則集中於資料層，讓頁面專注於呈現與互動。',
-    outcomes: [
-      '串起商品瀏覽、選擇數量、購物車與建立訂單的操作流程。',
-      '在售罄、已下架與庫存不足時提供明確回饋。',
-      '以共用資料狀態，讓新訂單可在商城後台查詢。'
-    ],
-    steps: [
-      { title: '挑選商品', description: '依分類、關鍵字或限時選品找到商品。' },
-      { title: '加入購物車', description: '檢視商品詳情與庫存，調整購買數量。' },
-      { title: '展示結帳', description: '填寫虛構收件資訊，建立可於後台查詢的示範訂單。' }
-    ],
-    engineering: [
-      '商品資訊與購物車衍生狀態使用 computed 計算。',
-      '結帳以單次資料操作檢查全部品項，失敗時不扣庫存。',
-      '活動倒數由儲存的結束時間計算，卸載頁面時清除計時器。'
-    ],
-    boundary:
-      '本版聚焦購物流程；登入、實際支付與 QR 掃描尚未納入互動展示。所有金額均為示意，不會產生交易。'
-  },
   {
     slug: 'commerce-admin',
     title: '商城後台',
-    subtitle: '把客服、會員與訂單，放在同一個工作脈絡。',
-    english: 'Commerce operations',
-    category: '營運與客服',
-    image: 'images/commerce-chat-demo.jpg',
-    imageAlt: '商城後台重製版實際畫面：深藍側欄與藍白三欄客服工作台',
-    coverNote: '重製版實際畫面。依原工作台的三欄布局與右側資訊流程重新實作，使用虛構會話。',
-    icon: 'ChatDotRound',
-    demo: '/demo/commerce-admin/chat',
+    english: 'Commerce admin',
+    summary: '讓客服在同一個工作區查資料、回覆與交接。',
     role: '後台前端主責開發',
-    summary: '主責商城後台前端，將客服聊天、會員查詢與訂單處理整合成連續工作流程。',
-    resumeLine:
-      '主責商城後台前端開發，建置客服聊天工作台，整合會話指派、訊息互動與會員／訂單側邊資訊，並維護商品、會員及訂單管理模組。',
-    workHighlights: [
+    image: 'images/commerce-chat-demo.jpg',
+    imageAlt: '商城後台重製版：會話、訊息與會員資訊三欄工作區',
+    demo: '/demo/commerce-admin/chat',
+    responsibilities: ['會員、商品與訂單管理', '客服會話與訊息互動', '共用表格、分頁與編輯元件'],
+    boundary: '聊天使用本機事件模擬，不連接公司 WebSocket；會員、訂單與訊息都是假資料。',
+    issues: [
       {
-        title: '客服不用離開對話，就能查完問題',
-        problem: '客服需要同時查看會話、會員身分與訂單脈絡；跨頁查詢容易中斷回覆。',
-        decision: '建立會話列表、訊息與會員資訊三欄布局，讓摘要、會員詳情與訂單在右側面板切換。',
-        result: '查詢資料與回覆訊息留在同一工作區，保留目前會話的上下文。'
+        id: 'member-context',
+        title: '查訂單，不切走對話',
+        teaser: '會員與訂單就地查詢',
+        description: '客服回覆需要脈絡，不只是一個輸入框。',
+        before: {
+          title: '資料分散在不同頁面',
+          description: '若查資料必須離開聊天室，回覆就會被切斷。',
+          steps: ['查看會話', '另查會員與訂單', '返回對話']
+        },
+        after: {
+          title: '把資料帶進對話旁邊',
+          description: '會員摘要、詳情與訂單在右側切換，訊息區保持開啟。',
+          steps: ['選擇會話', '側欄查詢與返回', '繼續回覆']
+        },
+        images: [
+          {
+            src: 'images/cases/chat-order.jpg',
+            label: '側欄查訂單',
+            alt: '虛構會話旁的會員訂單詳情',
+            caption: '右側查看訂單，中央對話仍保留。'
+          },
+          {
+            src: 'images/commerce-chat-demo.jpg',
+            label: '會員摘要',
+            alt: '三欄聊天工作台與會員摘要',
+            caption: '會話、訊息、會員資訊各自保留位置。'
+          }
+        ],
+        details: [
+          {
+            label: '我的處理',
+            text: '建立三欄工作台，讓摘要、會員詳情、訂單列表與詳情共用右側資訊流程。'
+          },
+          {
+            label: '狀態處理',
+            text: '面板依目前會員切換；在訂單詳情返回時，回到同一會員的訂單列表。'
+          }
+        ],
+        try: '選一則會話，點右側「訂單」，查看詳情後返回。',
+        demo: '/demo/commerce-admin/chat'
       },
       {
-        title: '聊天不只是「送出文字」',
-        problem: '多人客服、歷史訊息與即時更新，需要處理參與權限、未讀及訊息狀態。',
-        decision: '實作會話指派與加入、歷史訊息載入、WebSocket 更新，以及訊息編輯、收回等互動。',
-        result:
-          '將聊天完成為可持續工作的客服流程，而非單一訊息輸入介面；公開版以本機事件模擬即時服務。'
+        id: 'conversation-state',
+        title: '誰接手、能否回覆，要看得懂',
+        teaser: '指派、未讀與回覆狀態',
+        description: '多人客服需要清楚的會話歸屬與操作條件。',
+        before: {
+          title: '一則會話，有多個狀態',
+          description: '未加入、未讀與已結案，不能共用同一種回覆狀態。',
+          steps: ['辨識會話歸屬', '確認處理狀態']
+        },
+        after: {
+          title: '讓狀態決定可用操作',
+          description: '未加入時提供加入入口；結案後停用回覆，仍可重新開啟。',
+          steps: ['加入或指派', '回覆與訊息操作', '結案或重開']
+        },
+        images: [
+          {
+            src: 'images/cases/chat-assignment.jpg',
+            label: '尚未加入',
+            alt: '未指派會話顯示加入入口與停用的輸入區',
+            caption: '不能回覆時，直接說明原因與下一步。'
+          }
+        ],
+        details: [
+          {
+            label: '我的處理',
+            text: '實作會話加入與指派、未讀、釘選，以及文字、圖片、編輯與收回等訊息互動。'
+          },
+          {
+            label: '公開版邊界',
+            text: '原專案有歷史訊息與 WebSocket 更新；此處以本機事件展示狀態，不模擬真實連線成效。'
+          }
+        ],
+        try: '選擇許知遠的會話，加入後回覆，再試著結案。',
+        demo: '/demo/commerce-admin/chat'
       }
-    ],
-    responsibilities: [
-      '主責會員、商品、訂單與營運相關後台模組。',
-      '建置客服會話、訊息互動及會員／訂單資訊整合流程。',
-      '擴充共用表格、搜尋、分頁與抽屜式編輯元件。'
-    ],
-    challenge:
-      '客服回覆時需要反覆查找會員與訂單；會話指派、未讀、處理狀態與訊息操作又有各自的條件。',
-    approach:
-      '採用會話列表、訊息區、會員資訊三欄工作台，將指派、結案與訊息操作明確化，並提供關聯訂單的就地查詢。',
-    outcomes: [
-      '在單一工作台完成查詢會員、檢視訂單與回覆訊息。',
-      '依會話歸屬與處理狀態限制可執行操作。',
-      '共用搜尋與分頁模式，維持商品及訂單頁的一致操作方式。'
-    ],
-    steps: [
-      { title: '接手一則會話', description: '依未讀、我的會話或全部會話篩選，接手或指派客服。' },
-      {
-        title: '處理問題',
-        description: '查詢會員及關聯訂單，傳送文字或展示圖片，編輯與收回自己的訊息。'
-      },
-      { title: '完成服務', description: '結案、重新開啟，或模擬新訊息觀察未讀狀態。' }
-    ],
-    engineering: [
-      '會話與訊息依識別碼關聯，從資料計算列表摘要及未讀數。',
-      '資料存取集中於 api 與 mock repository；互動邏輯放在 hook。',
-      '伺服器狀態交由 Vue Query 管理；UI 狀態與跨頁選擇使用 Pinia。'
-    ],
-    boundary:
-      '訊息在本機模擬，不連接原公司的即時服務；「模擬新訊息」用來展示會話狀態轉換。正式系統的雙因素驗證與資產規則不在本版重現。'
+    ]
   },
   {
     slug: 'pos-admin',
     title: 'POS 後台',
-    subtitle: '從營運概況，到每一筆庫存調整。',
     english: 'Retail operations',
-    category: '門店與庫存',
-    image: 'images/pos-dashboard-demo.jpg',
-    imageAlt: 'POS 後台重製版實際畫面：門店營運看板與單據摘要',
-    coverNote: '重製版實際畫面。保留原看板配置與卡片編排方式，數值與單據均為虛構。',
-    icon: 'Grid',
-    demo: '/demo/pos-admin/dashboard',
+    summary: '把門店營運、商品與庫存整理成每天能用的工具。',
     role: '後台前端主責開發',
-    summary: '主責獨立 POS 後台前端，整合可調整營運看板、門店商品、庫存與角色權限。',
-    resumeLine:
-      '主責 POS 後台前端開發，建置可拖曳排序與調整尺寸的營運看板，整合門店、商品、庫存管理及角色權限，並開發批次匯入匯出流程。',
-    workHighlights: [
-      {
-        title: '看板依工作需求安排，而非固定排版',
-        problem: '門店需要同時掌握營收、訂單、商品與進退調撥等不同單據。',
-        decision: '以卡片組織營運資訊，提供編輯模式、拖曳排序、尺寸調整與重設配置。',
-        result: '把多種營運摘要集中在同一看板，讓使用者自行安排資訊的順序與空間。'
-      },
-      {
-        title: '把重複管理操作整理成一致流程',
-        problem: '商品、庫存、匯入匯出與角色管理各有規則，但操作方式需要一致。',
-        decision: '實作管理表格、搜尋與分頁、編輯介面及權限判斷，讓門店資料與可操作功能互相對應。',
-        result: '在不同管理模組間維持相近的查詢與編輯體驗，減少反覆理解操作方式。'
-      }
-    ],
+    image: 'images/pos-dashboard-demo.jpg',
+    imageAlt: 'POS 後台重製版：營運看板、趨勢與單據摘要',
+    demo: '/demo/pos-admin/dashboard',
     responsibilities: [
-      '主責商品、庫存、門店、銷售與營運 Dashboard 等模組。',
-      '開發匯入匯出、付款及幣別相關管理介面。',
-      '建置角色權限與可重用的後台元件。'
+      '門店、商品、庫存與銷售管理',
+      '營運看板與批次匯入匯出',
+      '角色權限與共用後台元件'
     ],
-    challenge:
-      '不同門店、不同工作角色，需要看到不同的資料與操作；庫存調整又必須保持可追蹤且避免無效數量。',
-    approach: '以門店作為查詢範圍，將權限規則與資料操作集中處理；庫存異動保留調整前後數量及原因。',
-    outcomes: [
-      '切換門店即可檢視對應庫存及示意營運數據。',
-      '庫存調整與 CSV 匯入都產生可查詢的異動紀錄。',
-      '切換角色即可觀察導覽、編輯及匯出權限的差異。'
-    ],
-    steps: [
+    boundary: '營運數字與單據為假資料；權限僅模擬前端行為，不能取代後端授權。',
+    issues: [
       {
-        title: '安排營運看板',
-        description: '進入編輯模式，排序卡片或調整尺寸，再切換門店查看配置。'
+        id: 'dashboard-layout',
+        title: '看板，依工作重點重新排列',
+        teaser: '卡片排序、尺寸與配置保存',
+        description: '營收、訂單和單據，不必一直占用固定位置。',
+        before: {
+          title: '每間門店關注的事不同',
+          description: '若卡片順序與尺寸固定，就難配合目前的工作重點。',
+          steps: ['營收與訂單', '商品與各類單據']
+        },
+        after: {
+          title: '把編排權交給使用者',
+          description: '編輯模式可排序、調整尺寸與重設，配置依門店保存。',
+          steps: ['進入編輯', '調整位置與尺寸', '保存配置']
+        },
+        images: [
+          {
+            src: 'images/cases/pos-edit.jpg',
+            label: '編輯看板',
+            alt: 'POS 看板編輯模式中的排序與尺寸控制',
+            caption: '編輯時才顯示控制項，平常保留乾淨的營運資訊。'
+          },
+          {
+            src: 'images/pos-dashboard-demo.jpg',
+            label: '營運總覽',
+            alt: 'POS 看板的一般瀏覽模式',
+            caption: '一般模式集中呈現營收、趨勢與單據摘要。'
+          }
+        ],
+        details: [
+          {
+            label: '我的處理',
+            text: '以 12 欄網格組織九個卡片，加入編輯模式、排序、尺寸調整與重設操作。'
+          },
+          {
+            label: '展示版實作',
+            text: '配置依門店在本機保存；重新載入仍保留。另提供按鈕排序與鍵盤尺寸控制。'
+          }
+        ],
+        try: '點「編輯看板」，調整一個卡片，再重新載入。',
+        demo: '/demo/pos-admin/dashboard'
       },
-      { title: '管理庫存', description: '搜尋商品、調整數量，或預覽 CSV 匯入結果後套用。' },
-      { title: '體驗權限', description: '調整店長及夥伴角色，再切換角色觀察功能變化。' }
+      {
+        id: 'store-permissions',
+        title: '同一套後台，不同的操作範圍',
+        teaser: '門店資料與角色權限',
+        description: '店長與夥伴的工作不同，畫面也要反映差異。',
+        before: {
+          title: '資料範圍與職責不同',
+          description: '查哪間店、能否修改或匯出，必須一起考慮。',
+          steps: ['選擇門店', '辨識角色', '確認可用操作']
+        },
+        after: {
+          title: '依門店與角色呈現',
+          description: '切店更新庫存；切換角色時同步調整導覽與可用操作。',
+          steps: ['切換門店', '切換角色', '查看可用功能']
+        },
+        images: [
+          {
+            src: 'images/cases/pos-permissions.jpg',
+            label: '門店夥伴',
+            alt: '門店夥伴角色下的唯讀商品庫存列表',
+            caption: '唯讀角色保留查詢，不提供庫存編輯與匯出。'
+          }
+        ],
+        details: [
+          {
+            label: '我的處理',
+            text: '實作角色管理、權限判斷，以及與門店資料對應的商品、庫存查詢流程。'
+          },
+          {
+            label: '展示版邊界',
+            text: '導覽、按鈕與 mock 操作都檢查權限；這仍不是安全認證，正式系統需要後端授權。'
+          }
+        ],
+        try: '在商品與庫存頁切換門店，再把角色改為門店夥伴。',
+        demo: '/demo/pos-admin/inventory'
+      }
+    ]
+  },
+  {
+    slug: 'storefront',
+    title: '商城',
+    english: 'Consumer commerce',
+    summary: '從商品瀏覽到購買，分別照顧桌機與手機。',
+    role: '前端功能開發與流程改善',
+    image: 'images/storefront-demo.jpg',
+    imageAlt: '商城重製版：商品分類、活動輪播與熱銷區',
+    demo: '/demo/storefront',
+    responsibilities: [
+      '會員登入、驗證與邀請流程',
+      '限時活動、商品詳情與倒數',
+      '錢包相關介面與響應式體驗'
     ],
-    engineering: [
-      '門店與目前角色使用 Pinia，表格搜尋與分頁封裝為共用 hook。',
-      '單筆調整及批次匯入共用資料驗證，整批驗證成功後才寫入。',
-      '權限同時套用於導覽、按鈕與 mock 資料操作，避免只隱藏按鈕。'
-    ],
-    boundary:
-      '本版權限僅模擬前端行為，不是安全認證；正式產品仍需後端授權。銷售報表為虛構資料，付款設定與實際收銀不在本版展示。'
+    boundary: '本版重現商品與購物流程；登入、付款、真實錢包與 QR 掃描未納入。所有交易皆為模擬。',
+    issues: [
+      {
+        id: 'device-navigation',
+        title: '手機，不是縮小的桌機',
+        teaser: '桌機導覽與手機操作',
+        description: '保留資訊完整度，也要讓手機找得到下一步。',
+        before: {
+          title: '桌機的資訊密度較高',
+          description: '分類、新品和活動同時出現，直接縮小容易擠在一起。',
+          steps: ['分類側欄', '活動與新品', '商品推薦']
+        },
+        after: {
+          title: '依裝置重新安排入口',
+          description: '桌機保留分類與新品區，手機改用分類捷徑與底部導覽。',
+          steps: ['分類捷徑', '觸控瀏覽', '底部導覽']
+        },
+        images: [
+          {
+            src: 'images/cases/storefront-mobile.jpg',
+            label: '手機',
+            alt: '手機商城的分類捷徑與底部導覽',
+            caption: '手機以分類捷徑與底部導覽集中主要入口。'
+          },
+          {
+            src: 'images/storefront-demo.jpg',
+            label: '桌機',
+            alt: '桌機商城的分類、新品與活動區',
+            caption: '桌機保留分類側欄、新品與較高的商品資訊密度。'
+          }
+        ],
+        details: [
+          {
+            label: '我的處理',
+            text: '維護桌機與行動版頁面、導覽及商品元件，依裝置安排入口，而不只縮小畫面。'
+          },
+          { label: '公開版', text: '以同一份虛構商品資料重製兩種布局，方便對照操作差異。' }
+        ],
+        try: '用手機開啟商城，或調整瀏覽器寬度比較導覽。',
+        demo: '/demo/storefront'
+      },
+      {
+        id: 'purchase-feedback',
+        title: '不能購買時，也要有下一步',
+        teaser: '售罄、數量與結帳回饋',
+        description: '商品狀態會變，購買操作不能只處理成功情況。',
+        before: {
+          title: '購買條件不只一種',
+          description: '庫存、數量與上架狀態，都會影響是否能購買。',
+          steps: ['檢查商品', '選擇數量', '確認可購買']
+        },
+        after: {
+          title: '讓狀態與操作一致',
+          description: '售罄停用購買，數量受庫存限制，結帳後可到後台查訂單。',
+          steps: ['顯示可購買狀態', '檢查整筆購物車', '建立展示訂單']
+        },
+        images: [
+          {
+            src: 'images/cases/storefront-stock.jpg',
+            label: '售罄狀態',
+            alt: '售罄商品的數量與購買按鈕停用',
+            caption: '售罄仍保留商品資訊，並明確停用購買操作。'
+          }
+        ],
+        details: [
+          { label: '原工作範圍', text: '實作商品詳情、限時活動與會員相關狀態介面。' },
+          {
+            label: '展示版驗證',
+            text: '結帳集中檢查全部品項；失敗不扣庫存。這是公開重製版的規則，不拿來宣稱原系統的商業成效。'
+          }
+        ],
+        try: '查看售罄商品，或選一件有庫存商品完成模擬結帳。',
+        demo: '/demo/storefront?product=p6'
+      }
+    ]
   }
 ]
 export const findProject = (slug) => projects.find((project) => project.slug === slug)
+export const findIssue = (project, id) =>
+  project?.issues.find((issue) => issue.id === id) || project?.issues[0]

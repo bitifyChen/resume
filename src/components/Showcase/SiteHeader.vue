@@ -11,7 +11,7 @@
       <span>/</span>
     </RouterLink>
     <nav aria-label="主要導覽">
-      <RouterLink to="/">產品工程案例</RouterLink>
+      <RouterLink to="/">Projects</RouterLink>
       <a href="https://chenchenworkshop.com/project" target="_blank" rel="noopener noreferrer">
         過往作品
         <AppIcon name="ArrowRight" :size="14" />

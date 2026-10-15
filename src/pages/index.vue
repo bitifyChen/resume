@@ -5,60 +5,56 @@
 </script>
 
 <template>
-  <main id="main-content" class="showcase-home page-container">
-    <section class="work-intro">
-      <p>Chenchen / Frontend Developer</p>
-      <h1>
-        讓實際做過的產品，
-        <br />
-        說明我的開發能力。
-      </h1>
-      <div class="work-intro-description">
-        <p>從消費者購物，到客服與門店每天使用的工作工具。</p>
-        <p>三個獨立案例，保留原產品的介面結構與操作邏輯，以假資料開放體驗。</p>
-      </div>
-    </section>
-    <section id="selected-work" class="work-section">
-      <div class="section-title"><h2>Projects</h2></div>
-      <div class="work-projects">
-        <article v-for="project in projects" :key="project.slug" class="work-project">
-          <RouterLink :to="project.demo" class="work-preview" :aria-label="`體驗${project.title}`">
-            <img
-              :src="asset(project.image)"
-              :alt="project.imageAlt"
-              width="1440"
-              height="900"
-              loading="lazy"
-            />
-          </RouterLink>
-          <div class="work-project-text">
-            <p class="work-role">{{ project.role }}</p>
-            <h3>{{ project.title }}</h3>
-            <p class="work-summary">{{ project.summary }}</p>
-            <div class="work-project-links">
-              <RouterLink :to="project.demo">
-                開啟展示
-                <AppIcon name="ArrowRight" :size="15" />
+  <main id="main-content" class="portfolio-index page-container">
+    <header class="projects-intro">
+      <p>前端開發 / 實務案例</p>
+      <h1>projects.</h1>
+      <p>從專案進入，看我處理過的問題。</p>
+    </header>
+    <div id="selected-work" class="project-entries">
+      <article
+        v-for="project in projects"
+        :key="project.slug"
+        class="project-entry"
+        :class="`entry-${project.slug}`"
+      >
+        <RouterLink
+          :to="`/projects/${project.slug}`"
+          class="project-entry-preview"
+          :aria-label="`檢視${project.title}案例`"
+        >
+          <img
+            :src="asset(project.image)"
+            :alt="project.imageAlt"
+            width="1440"
+            height="900"
+            :loading="project.slug === 'commerce-admin' ? 'eager' : 'lazy'"
+            :fetchpriority="project.slug === 'commerce-admin' ? 'high' : 'auto'"
+          />
+        </RouterLink>
+        <div class="project-entry-content">
+          <p class="project-entry-role">{{ project.role }}</p>
+          <h2>
+            <RouterLink :to="`/projects/${project.slug}`">{{ project.title }}</RouterLink>
+          </h2>
+          <p class="project-entry-summary">{{ project.summary }}</p>
+          <ul class="project-entry-issues">
+            <li v-for="issue in project.issues" :key="issue.id">
+              <RouterLink :to="{ path: `/projects/${project.slug}`, query: { issue: issue.id } }">
+                <span>
+                  <strong>{{ issue.title }}</strong>
+                  <small>{{ issue.teaser }}</small>
+                </span>
+                <AppIcon name="ArrowRight" :size="18" />
               </RouterLink>
-              <RouterLink :to="`/projects/${project.slug}`">閱讀案例</RouterLink>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-    <section class="work-practice">
-      <h2>不只列功能，也說明怎麼完成。</h2>
-      <div>
-        <p>每個案例分別說明負責範圍、遇到的問題、實作決策，以及可以親自操作的代表流程。</p>
-        <p>商城後台與 POS 後台是兩套不同產品。聊天工作台與可調整看板，則是這次展示的重點。</p>
-      </div>
-    </section>
-    <aside class="disclosure">
-      <strong>公開展示的範圍</strong>
-      <p>
-        依開發經驗重新實作，替換公司品牌、會員、商品、交易及營運資料。不提供公司原始碼、內部
-        API、帳號或正式環境存取；案例中的模擬限制另有標示。
-      </p>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </div>
+    <aside class="portfolio-disclosure">
+      <strong>關於展示</strong>
+      <p>保留產品操作結構，以虛構品牌與資料重製；不提供公司原始碼或內部服務。</p>
     </aside>
   </main>
 </template>
