@@ -1,0 +1,63 @@
+/* Entry: editorial portfolio, variance 6 / motion 3 / density 4.
+   Product surfaces use Element Plus. Corners: panels 12px, controls 6px.
+   Layers: demo bar 30, mobile backdrop 35, navigation 40, Element overlays 2000+. */
+:root {
+  font-family: 'Manrope Variable', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  color: #242d28;
+  background: #eae5df;
+  font-synthesis: none;
+  --page: #eae5df;
+  --surface: #fdfdfb;
+  --surface-muted: #f1f3ef;
+  --canvas: #f5f6f3;
+  --ink: #242d28;
+  --muted: #647069;
+  --line: #d6dcd5;
+  --accent: #3f6452;
+  --accent-soft: #e6eee7;
+  --sidebar: #f9faf7;
+  --el-color-primary: #3f6452;
+  --el-color-primary-light-3: #6a8a77;
+  --el-color-primary-light-5: #9ab3a2;
+  --el-color-primary-light-7: #c5d4c9;
+  --el-color-primary-light-8: #dce6df;
+  --el-color-primary-light-9: #edf2ee;
+  --el-color-primary-dark-2: #304e40;
+  --el-border-radius-base: 6px;
+  --el-color-success: #4f7b62;
+  --el-color-warning: #9a6a31;
+  --el-color-danger: #ac514b;
+  --el-text-color-primary: var(--ink);
+  --el-text-color-regular: var(--muted);
+  --el-bg-color: var(--surface);
+  --el-fill-color-blank: var(--surface);
+  --el-fill-color-light: var(--surface-muted);
+  --el-border-color: var(--line);
+  --el-font-family: 'Manrope Variable', 'Microsoft JhengHei', sans-serif;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --page: #1e2521;
+  --surface: #252e28;
+  --surface-muted: #303a33;
+  --canvas: #202822;
+  --ink: #e7ede7;
+  --muted: #aebbb0;
+  --line: #435046;
+  --accent: #a1c7ac;
+  --accent-soft: #344b3c;
+  --sidebar: #252e28;
+  --el-color-primary: #9ec3a9;
+  --el-color-primary-light-3: #6e997d;
+  --el-color-primary-light-5: #52715d;
+  --el-color-primary-light-7: #3b5544;
+  --el-color-primary-light-8: #344b3c;
+  --el-color-primary-light-9: #2e4034;
+  --el-color-primary-dark-2: #b9d7c0;
+  --el-text-color-secondary: #aebbb0;
+  --el-border-color-light: #3a473e;
+  --el-border-color-lighter: #354238;
+  --el-mask-color: rgb(19 25 20 / 82%);
+  --el-color-success: #91b99b;
+  --el-color-warning: #d3ac79;
+}

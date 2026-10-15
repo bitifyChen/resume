@@ -1,0 +1,224 @@
+/* Retail operations */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.metric {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 23px;
+}
+.metric > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+.metric > div .el-icon {
+  color: var(--accent);
+}
+.metric > strong {
+  display: block;
+  font-size: clamp(22px, 2.1vw, 31px);
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+  margin-block: 20px 12px;
+  white-space: nowrap;
+}
+.metric > strong small {
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 7px;
+  color: var(--muted);
+}
+.metric p,
+.metric > a {
+  color: var(--muted);
+  font-size: 10px;
+}
+.metric.attention {
+  background: var(--accent-soft);
+}
+.metric > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.dashboard-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 0;
+}
+.dashboard-panel > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 23px;
+}
+.dashboard-panel h2 {
+  font-size: 16px;
+  font-weight: 650;
+}
+.dashboard-panel header p {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.sales-chart {
+  height: 280px;
+  width: 100%;
+}
+.chart-table-toggle {
+  margin-top: 10px;
+  font-size: 10px;
+}
+.stock-warning {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  border-bottom: 1px solid var(--line);
+  padding-block: 13px;
+}
+.stock-warning strong {
+  font-size: 12px;
+  display: block;
+}
+.stock-warning span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.stock-warning > div:last-child {
+  text-align: right;
+}
+.stock-warning > div:last-child strong {
+  color: var(--el-color-warning);
+  font-size: 15px;
+}
+.stock-manage-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 22px;
+}
+.inventory-hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  padding: 15px 20px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.inventory-hint .text-button {
+  margin-left: auto;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.adjustment-result {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background: var(--accent-soft);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.permissions-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 24px;
+}
+.role-list {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px 12px;
+}
+.role-list h2 {
+  font-size: 13px;
+  padding-inline: 12px;
+  margin-bottom: 20px;
+}
+.role-list button {
+  width: 100%;
+  background: transparent;
+  padding: 16px 13px;
+  border: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  border-radius: 7px;
+  margin-bottom: 7px;
+}
+.role-list button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.role-list button > .el-icon:last-child {
+  margin-left: auto;
+}
+.role-list button strong {
+  display: block;
+  font-size: 13px;
+}
+.role-list button small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+.permission-panel {
+  min-width: 0;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.permission-panel header h2 {
+  font-size: 21px;
+  margin-bottom: 10px;
+}
+.permission-panel header p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+.permission-footer {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: 28px;
+}
+.permission-footer p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-right: auto;
+  max-width: 36em;
+}
+.permission-disclaimer {
+  margin-top: 25px;
+}
+.access-notice {
+  padding-top: 55px;
+}
