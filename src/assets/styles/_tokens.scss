@@ -2,6 +2,7 @@
    Product surfaces use Element Plus. Corners: panels 12px, controls 6px.
    Layers: demo bar 30, mobile backdrop 35, navigation 40, Element overlays 2000+. */
 :root {
+  color-scheme: light;
   font-family: 'Manrope Variable', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
   color: #242d28;
   background: #fafafa;
@@ -34,30 +35,4 @@
   --el-fill-color-light: var(--surface-muted);
   --el-border-color: var(--line);
   --el-font-family: 'Manrope Variable', 'Microsoft JhengHei', sans-serif;
-}
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --page: #1e2521;
-  --surface: #252e28;
-  --surface-muted: #303a33;
-  --canvas: #202822;
-  --ink: #e7ede7;
-  --muted: #aebbb0;
-  --line: #435046;
-  --accent: #a1c7ac;
-  --accent-soft: #344b3c;
-  --sidebar: #252e28;
-  --el-color-primary: #9ec3a9;
-  --el-color-primary-light-3: #6e997d;
-  --el-color-primary-light-5: #52715d;
-  --el-color-primary-light-7: #3b5544;
-  --el-color-primary-light-8: #344b3c;
-  --el-color-primary-light-9: #2e4034;
-  --el-color-primary-dark-2: #b9d7c0;
-  --el-text-color-secondary: #aebbb0;
-  --el-border-color-light: #3a473e;
-  --el-border-color-lighter: #354238;
-  --el-mask-color: rgb(19 25 20 / 82%);
-  --el-color-success: #91b99b;
-  --el-color-warning: #d3ac79;
 }

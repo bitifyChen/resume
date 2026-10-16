@@ -72,11 +72,6 @@ h3 {
 .el-button--primary {
   --el-button-text-color: #f9fbf8;
 }
-[data-theme='dark'] .el-button--primary {
-  --el-button-text-color: #17261c;
-  --el-button-hover-text-color: #17261c;
-  --el-button-disabled-text-color: #17261c;
-}
 .el-button.is-text {
   color: var(--accent);
 }

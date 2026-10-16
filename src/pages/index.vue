@@ -1,57 +1,36 @@
 <script setup>
-  import { projects } from '@/data/projects'
-  import { asset } from '@/utils/format'
-  import AppIcon from '@/components/Shared/AppIcon.vue'
+  import { caseStudies, projects, sideProjects } from '@/data/portfolio'
+  import CaseStudyIndex from '@/components/Showcase/CaseStudyIndex.vue'
+  import ProjectTile from '@/components/Showcase/ProjectTile.vue'
 </script>
 
 <template>
   <main id="main-content" class="portfolio-index page-container">
-    <header class="projects-intro">
-      <p>前端開發 / 實務案例</p>
-      <h1>projects.</h1>
-      <p>從專案進入，看我處理過的問題。</p>
-    </header>
-    <div id="selected-work" class="project-entries">
-      <article
-        v-for="project in projects"
-        :key="project.slug"
-        class="project-entry"
-        :class="`entry-${project.slug}`"
-      >
-        <RouterLink
-          :to="`/projects/${project.slug}`"
-          class="project-entry-preview"
-          :aria-label="`檢視${project.title}案例`"
-        >
-          <img
-            :src="asset(project.image)"
-            :alt="project.imageAlt"
-            width="1440"
-            height="900"
-            :loading="project.slug === 'commerce-admin' ? 'eager' : 'lazy'"
-            :fetchpriority="project.slug === 'commerce-admin' ? 'high' : 'auto'"
-          />
-        </RouterLink>
-        <div class="project-entry-content">
-          <p class="project-entry-role">{{ project.role }}</p>
-          <h2>
-            <RouterLink :to="`/projects/${project.slug}`">{{ project.title }}</RouterLink>
-          </h2>
-          <p class="project-entry-summary">{{ project.summary }}</p>
-          <ul class="project-entry-issues">
-            <li v-for="issue in project.issues" :key="issue.id">
-              <RouterLink :to="{ path: `/projects/${project.slug}`, query: { issue: issue.id } }">
-                <span>
-                  <strong>{{ issue.title }}</strong>
-                  <small>{{ issue.teaser }}</small>
-                </span>
-                <AppIcon name="ArrowRight" :size="18" />
-              </RouterLink>
-            </li>
-          </ul>
-        </div>
-      </article>
-    </div>
+    <section id="case-study" class="portfolio-section" aria-labelledby="case-study-title">
+      <header class="portfolio-section-heading">
+        <h1 id="case-study-title">Case Study</h1>
+      </header>
+      <CaseStudyIndex v-if="caseStudies.length" :studies="caseStudies" />
+      <p v-else class="portfolio-empty">案例整理中。</p>
+    </section>
+    <section id="selected-work" class="portfolio-section" aria-labelledby="project-title">
+      <header class="portfolio-section-heading">
+        <h2 id="project-title">Project</h2>
+      </header>
+      <div v-if="projects.length" class="project-entries">
+        <ProjectTile v-for="project in projects" :key="project.id" :project="project" />
+      </div>
+      <p v-else class="portfolio-empty">專案整理中。</p>
+    </section>
+    <section id="side-project" class="portfolio-section" aria-labelledby="side-project-title">
+      <header class="portfolio-section-heading">
+        <h2 id="side-project-title">Side Project</h2>
+      </header>
+      <div v-if="sideProjects.length" class="project-entries">
+        <ProjectTile v-for="project in sideProjects" :key="project.id" :project="project" />
+      </div>
+      <p v-else class="portfolio-empty">之後新增。</p>
+    </section>
     <aside class="portfolio-disclosure">
       <strong>關於展示</strong>
       <p>保留產品操作結構，以虛構品牌與資料重製；不提供公司原始碼或內部服務。</p>

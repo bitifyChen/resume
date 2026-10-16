@@ -1,16 +1,18 @@
 <script setup>
   import { computed, nextTick, watch } from 'vue'
   import { useRoute } from 'vue-router'
-  import { comparisonNote, findProject, findIssue } from '@/data/projects'
+  import { comparisonNote } from '@/data/caseStudies'
+  import { findProject, findCaseStudy, getProjectCases } from '@/data/portfolio'
   import AppIcon from '@/components/Shared/AppIcon.vue'
   import IssueStudy from '@/components/Showcase/IssueStudy.vue'
   import { scrollToElement } from '@/utils/dom'
   const route = useRoute()
   const project = computed(() => findProject(route.params.slug))
-  const issue = computed(() => findIssue(project.value, route.query.issue))
+  const studies = computed(() => getProjectCases(project.value?.id))
+  const issue = computed(() => findCaseStudy(project.value, route.query.issue))
   const nextIssue = computed(() => {
-    const index = project.value?.issues.indexOf(issue.value)
-    return project.value?.issues[index + 1]
+    const index = studies.value.indexOf(issue.value)
+    return studies.value[index + 1]
   })
   watch(
     issue,
@@ -32,7 +34,7 @@
   <main v-if="project" id="main-content" class="project-case page-container">
     <RouterLink to="/" class="project-back">
       <AppIcon name="ArrowLeft" :size="16" />
-      Projects
+      Case Study
     </RouterLink>
     <header class="project-case-heading">
       <h1>{{ project.title }}</h1>
@@ -47,11 +49,11 @@
         <nav aria-label="案例議題">
           <p>解決的議題</p>
           <RouterLink
-            v-for="item in project.issues"
+            v-for="item in studies"
             :key="item.id"
             :to="{ path: `/projects/${project.slug}`, query: { issue: item.id } }"
-            :aria-current="issue.id === item.id ? 'page' : undefined"
-            :class="{ active: issue.id === item.id }"
+            :aria-current="issue?.id === item.id ? 'page' : undefined"
+            :class="{ active: issue?.id === item.id }"
           >
             <strong>{{ item.title }}</strong>
             <small>{{ item.teaser }}</small>
@@ -60,7 +62,8 @@
         <p class="comparison-disclaimer">{{ comparisonNote }}</p>
       </aside>
       <div class="project-issue-content">
-        <IssueStudy :key="`${project.slug}-${issue.id}`" :issue="issue" />
+        <IssueStudy v-if="issue" :key="`${project.slug}-${issue.id}`" :issue="issue" />
+        <p v-else>案例整理中。</p>
         <RouterLink
           v-if="nextIssue"
           class="next-issue"

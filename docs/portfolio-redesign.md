@@ -1,5 +1,7 @@
 # 面試作品集：議題型改版
 
+此頁記錄第三版設計判讀。2026-10-16 依新需求改為 Case Study → Project → Side Project，僅保留淺色；目前的資料維護方式見 `portfolio-content.md`。保留既有配色、字體與案例網址，設計設定仍為 5／3／5。
+
 ## 參考分析
 
 - [1wei.dev](https://1wei.dev/)：Projects 使用預覽、專案名稱、短用途與直接連結，容易掃讀；不套用其個人介紹或品牌。

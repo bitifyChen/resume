@@ -1,7 +1,5 @@
 <script setup>
-  import { useSessionStore } from '@/store/useSessionStore'
   import AppIcon from '@/components/Shared/AppIcon.vue'
-  const session = useSessionStore()
 </script>
 
 <template>
@@ -11,18 +9,11 @@
       <span>/</span>
     </RouterLink>
     <nav aria-label="主要導覽">
-      <RouterLink to="/">Projects</RouterLink>
+      <RouterLink to="/">作品總覽</RouterLink>
       <a href="https://chenchenworkshop.com/project" target="_blank" rel="noopener noreferrer">
         過往作品
         <AppIcon name="ArrowRight" :size="14" />
       </a>
     </nav>
-    <button
-      class="icon-button"
-      :aria-label="session.isDark ? '切換淺色' : '切換深色'"
-      @click="session.toggleTheme"
-    >
-      <AppIcon :name="session.isDark ? 'Sunny' : 'Moon'" />
-    </button>
   </header>
 </template>
