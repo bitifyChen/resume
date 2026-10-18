@@ -92,7 +92,7 @@
       <div class="project-overview-copy">
         <h1 id="project-title">{{ project.title }}</h1>
         <ContentStatusBadge
-          v-if="isSideProject"
+          v-if="isSideProject && project.contentStatus === 0"
           class="project-detail-status"
           :status="project.contentStatus"
         />

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { trackPageView } from '@/utils/analytics'
 
 const HOME_SCROLL_KEY = 'portfolio-home-scroll-position'
 const detailRouteNames = new Set(['CaseStudy', 'Project', 'SideProject'])
@@ -86,5 +87,6 @@ router.beforeEach((to, from) => {
 
 router.afterEach((to) => {
   document.title = `${to.meta.title} / Chenchen`
+  if (to.name !== 'ContentAdmin') trackPageView(to.path, document.title)
 })
 export default router

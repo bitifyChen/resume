@@ -15,7 +15,8 @@ const approvedExternalUrls = [
   'https://github.com/bitifyChen/RoadLoop',
   'https://test-explorer.coolkertour.com',
   'https://sosobook.chenchenworkshop.com',
-  'https://github.com/bitifyChen/sosobook'
+  'https://github.com/bitifyChen/sosobook',
+  'https://www.googletagmanager.com'
 ].map((url) => url.toLowerCase())
 async function collect(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
