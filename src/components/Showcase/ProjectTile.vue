@@ -42,7 +42,7 @@
       <span v-else-if="isSideProject" class="project-entry-placeholder" aria-hidden="true"></span>
     </RouterLink>
     <div class="project-entry-content">
-      <div v-if="isSideProject && (project.contentStatus === 0 || project.featured)" class="project-entry-status">
+      <div v-if="isSideProject" class="project-entry-status">
         <ContentStatusBadge v-if="project.contentStatus === 0" :status="project.contentStatus" />
         <span v-if="project.featured" class="project-entry-featured" role="img" aria-label="精選 Side Project">
           <AppIcon name="StarFilled" :size="16" />
