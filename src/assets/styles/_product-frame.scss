@@ -25,8 +25,8 @@
   --el-border-color-light: #e4e7ed;
   --el-border-color-lighter: #ebeef5;
   --el-mask-color: rgb(0 0 0 / 50%);
-  --el-font-family: 'Microsoft JhengHei', Arial, sans-serif;
-  font-family: Arial, 'Microsoft JhengHei', sans-serif;
+  --el-font-family: var(--display-font);
+  font-family: var(--display-font);
 }
 .admin-app .demo-bar,
 .storefront-app .demo-bar {

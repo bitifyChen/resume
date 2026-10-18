@@ -63,9 +63,9 @@
   async function copyStore() {
     try {
       await navigator.clipboard.writeText(`DEMO-${session.storeId.toUpperCase()}`)
-      ElMessage.success('已複製展示門店 ID')
+      ElMessage.success('已複製展示商家 ID')
     } catch {
-      ElMessage.info(`展示門店 ID：DEMO-${session.storeId.toUpperCase()}`)
+      ElMessage.info(`展示商家 ID：DEMO-${session.storeId.toUpperCase()}`)
     }
   }
 </script>
@@ -78,7 +78,7 @@
       <div>
         <h1>{{ store?.name }}</h1>
         <button class="text-button store-copy" @click="copyStore">
-          門店 ID：DEMO-{{ session.storeId.toUpperCase() }}
+          商家 ID：DEMO-{{ session.storeId.toUpperCase() }}
           <AppIcon name="Collection" :size="12" />
         </button>
       </div>
@@ -91,7 +91,7 @@
       </div>
     </header>
     <p v-if="editMode" class="dashboard-edit-hint" role="status">
-      拖曳標題重新排序，拖曳右下角調整尺寸；也可使用各卡片的左右按鈕排序。排列依門店儲存在本機。
+      拖曳標題重新排序，拖曳右下角調整尺寸；也可使用各卡片的左右按鈕排序。排列依商家儲存在本機。
     </p>
     <div ref="grid" class="pos-widget-grid" :class="{ 'is-editing': editMode }">
       <article

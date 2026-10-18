@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>客服對話訂單辨識</title>
+    <style>
+      :root { --primary:#409eff; --primary-deep:#2563eb; --page:#edf3fb; --line:#e3ebf6; --text:#363636; }
+      * { box-sizing:border-box; }
+      html,body { width:1440px; height:900px; margin:0; overflow:hidden; }
+      body { background:var(--page); color:var(--text); font:14px Arial,"Microsoft JhengHei","Noto Sans TC",sans-serif; }
+      button,textarea { font:inherit; }
+      button { border:0; }
+      .workspace { display:flex; width:100%; height:100%; gap:12px; padding:12px; overflow:hidden; }
+      .panel { min-width:0; overflow:hidden; border:1px solid var(--line); border-radius:12px; background:#fff; box-shadow:0 8px 24px rgba(57,82,128,.06); }
+      .conversation-panel { position:relative; display:flex; width:300px; flex:0 0 300px; flex-direction:column; }
+      .conversation-tabs { display:flex; height:48px; flex:0 0 48px; align-items:stretch; border-bottom:1px solid var(--line); padding-left:4px; }
+      .tab { position:relative; padding:0 18px; background:transparent; color:#64748b; font-size:13px; white-space:nowrap; }
+      .tab.active { color:var(--primary-deep); font-weight:600; }
+      .tab.active::after { position:absolute; right:14px; bottom:-1px; left:14px; height:2px; border-radius:999px; background:#3b82f6; content:""; }
+      .search-button { width:28px; height:28px; margin:10px 10px 0 auto; border:1px solid #b9dcff; border-radius:50%; background:#fff; color:var(--primary); font-size:16px; line-height:26px; text-align:center; }
+      .conversation-list { flex:1; overflow:hidden; background:#f9fafb; padding:8px; }
+      .conversation { display:grid; min-height:74px; grid-template-columns:50px minmax(0,1fr) 58px; align-items:center; border-radius:8px; padding:12px; }
+      .conversation+.conversation { margin-top:4px; }
+      .conversation.active { background:rgba(219,234,254,.7); }
+      .avatar { display:grid; width:50px; height:50px; place-items:center; border-radius:50%; background:#dbeafe; color:#3b82f6; font-size:13px; font-weight:700; }
+      .avatar.slate { background:#e2e8f0; color:#64748b; }
+      .avatar.green { background:#dcfce7; color:#16a34a; }
+      .conversation-copy { min-width:0; padding:0 12px; }
+      .conversation-copy strong { display:block; overflow:hidden; color:#1f2937; font-size:14px; text-overflow:ellipsis; white-space:nowrap; }
+      .conversation-copy span { display:block; overflow:hidden; margin-top:7px; color:#6b7280; font-size:12px; text-overflow:ellipsis; white-space:nowrap; }
+      .conversation-meta { display:flex; height:50px; flex-direction:column; align-items:flex-end; justify-content:space-between; color:#9ca3af; font-size:11px; }
+      .unread { display:grid; min-width:25px; height:24px; place-items:center; border-radius:999px; background:#3b82f6; color:#fff; font-size:12px; }
+      .conversation-footer { display:flex; height:40px; flex:0 0 40px; align-items:center; justify-content:space-between; border-top:1px solid #e5e7eb; background:#f9fafb; padding:0 12px; color:#6b7280; font-size:11px; }
+      .refresh { display:grid; width:24px; height:24px; place-items:center; border:1px solid #b9dcff; border-radius:50%; color:var(--primary); }
+      .switch { width:28px; height:16px; border-radius:999px; background:#13ce66; padding:2px; }
+      .switch::after { display:block; width:12px; height:12px; margin-left:12px; border-radius:50%; background:#fff; content:""; }
+      .chat-panel { display:flex; min-width:0; flex:1 1 auto; flex-direction:column; }
+      .chat-header { display:flex; height:48px; flex:0 0 48px; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); padding:0 20px; }
+      .chat-person { display:flex; align-items:center; }
+      .chat-person .avatar { width:32px; height:32px; font-size:11px; }
+      .chat-person strong { margin-left:10px; color:#363636; font-weight:800; }
+      .chat-actions { display:flex; align-items:center; gap:10px; }
+      .manager-note { color:#616c76; font-size:12px; }
+      .assign { height:26px; border:1px solid var(--primary); border-radius:999px; background:var(--primary); color:#fff; padding:0 13px; font-size:12px; }
+      .panel-toggle { display:grid; width:28px; height:28px; place-items:center; border-radius:50%; background:transparent; color:var(--primary); font-size:17px; }
+      .messages { flex:1; overflow:hidden; padding:28px 20px 14px; }
+      .system-note { margin:0 0 24px; color:#9ca3af; font-size:11px; text-align:center; }
+      .message-row { display:flex; align-items:flex-end; margin-bottom:22px; }
+      .message-row.me { justify-content:flex-end; }
+      .message-row .avatar { width:32px; height:32px; flex:0 0 32px; margin-right:8px; font-size:10px; }
+      .message-stack { display:flex; max-width:448px; flex-direction:column; align-items:flex-start; }
+      .message-row.me .message-stack { align-items:flex-end; }
+      .bubble { overflow:hidden; border-radius:16px 16px 16px 0; background:#f3f4f6; box-shadow:0 4px 10px rgba(15,23,42,.12); color:#1f2937; line-height:1.5; padding:12px 16px; }
+      .message-row.me .bubble { border-radius:16px 16px 0 16px; background:#3b82f6; color:#fff; }
+      .message-meta { margin-top:6px; color:#9ca3af; font-size:11px; }
+      .order-helper { margin-top:8px; border-top:1px solid #e5e7eb; padding-top:8px; }
+      .order-helper-label { color:#6b7280; font-size:12px; }
+      .order-badge { display:inline-flex; align-items:center; margin-top:4px; border:1px solid rgba(99,102,241,.22); border-radius:9px; background:linear-gradient(135deg,rgba(239,246,255,.95),rgba(245,243,255,.95)); box-shadow:0 2px 6px rgba(59,130,246,.12); color:#2563eb; font-size:12px; font-weight:600; line-height:1; padding:4px 6px; }
+      .composer { display:flex; min-height:50px; flex:0 0 50px; align-items:center; gap:8px; margin:0 20px 12px; border:1px solid #dcdfe6; border-radius:8px; padding:0 10px; }
+      .composer-plus,.composer-tool { background:transparent; color:#b3b3b3; font-size:22px; }
+      .composer-plus { width:25px; color:#828282; font-size:28px; font-weight:200; }
+      .composer textarea { height:22px; flex:1; resize:none; border:0; outline:0; color:#828282; line-height:20px; }
+      .send { display:grid; width:35px; height:35px; place-items:center; border-radius:50%; background:#0086ea; color:#fff; font-size:15px; }
+      .order-panel { display:flex; width:520px; flex:0 0 520px; flex-direction:column; }
+      .order-panel-header { display:flex; height:48px; flex:0 0 48px; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); background:#f8fbff; padding:0 16px; }
+      .order-panel-header strong { color:#334155; font-size:14px; }
+      .order-panel-header .back { color:var(--primary); font-size:20px; }
+      .order-panel-header .close { color:var(--primary); font-size:22px; font-weight:300; }
+      .order-scroll { flex:1; overflow:hidden; padding:0 12px 16px; }
+      .drawer-header { position:relative; z-index:2; display:flex; min-height:58px; align-items:center; border-bottom:1px solid #e5e7eb; background:#fff; box-shadow:0 10px 8px -2px rgba(229,231,235,.5); padding:10px; font-weight:800; }
+      .status-tag { border:1px solid #b3e19d; border-radius:4px; background:#f0f9eb; color:#67c23a; padding:4px 8px; font-size:12px; font-weight:500; }
+      .drawer-title { margin-left:10px; }
+      .detail-form { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:0 12px; padding:20px 10px; }
+      .field { grid-column:span 12; margin-bottom:16px; }
+      .field.col-6 { grid-column:span 6; }
+      .field.col-4 { grid-column:span 4; }
+      .field label { display:block; margin-bottom:8px; color:#111113; font-size:14px; font-weight:700; }
+      .readonly { display:flex; height:48px; align-items:center; overflow:hidden; border:1px solid rgba(229,231,235,.5); border-radius:2px; background:rgba(229,231,235,.5); color:#606266; padding:0 11px; font-size:14px; white-space:nowrap; }
+      .product-table { width:100%; border-collapse:collapse; table-layout:fixed; color:#606266; font-size:12px; }
+      .product-table th,.product-table td { border:1px solid #ebeef5; padding:10px 8px; text-align:left; }
+      .product-table th { background:#fafafa; color:#909399; font-weight:600; }
+      .product-table .name { width:31%; }
+      .product-table .feature { width:23%; }
+      .product-tag { display:inline-block; border:1px solid #b3d8ff; border-radius:4px; background:#ecf5ff; color:#409eff; padding:2px 6px; }
+    </style>
+  </head>
+  <body>
+    <main class="workspace">
+      <aside class="panel conversation-panel">
+        <div class="conversation-tabs"><button class="tab active">全部聊天</button><button class="tab">我的聊天</button><button class="search-button" aria-label="搜尋">⌕</button></div>
+        <div class="conversation-list">
+          <article class="conversation active"><span class="avatar">展</span><div class="conversation-copy"><strong>示範會員 0084</strong><span>想查詢 DEMO-1724937850123</span></div><div class="conversation-meta"><time>14:32</time><span class="unread">1</span></div></article>
+          <article class="conversation"><span class="avatar slate">例</span><div class="conversation-copy"><strong>示範會員 0121</strong><span>請問商品規格還有庫存嗎？</span></div><div class="conversation-meta"><time>14:16</time></div></article>
+          <article class="conversation"><span class="avatar green">測</span><div class="conversation-copy"><strong>示範會員 0306</strong><span>收到商品了，謝謝</span></div><div class="conversation-meta"><time>13:58</time></div></article>
+          <article class="conversation"><span class="avatar slate">資</span><div class="conversation-copy"><strong>示範會員 0913</strong><span>可以修改收件資訊嗎？</span></div><div class="conversation-meta"><time>13:41</time></div></article>
+        </div>
+        <div class="conversation-footer"><div style="display:flex;align-items:center;gap:7px"><span class="refresh">↻</span><span>更新於 8 秒鐘前</span></div><div style="display:flex;align-items:center;gap:7px"><span>自動刷新</span><span class="switch"></span></div></div>
+      </aside>
+      <section class="panel chat-panel">
+        <header class="chat-header"><div class="chat-person"><span class="avatar">展</span><strong>示範會員 0084</strong></div><div class="chat-actions"><span class="manager-note">客服 A 也在此聊天室中</span><button class="assign">指派</button><button class="panel-toggle" aria-label="展開側邊面板">▥</button></div></header>
+        <div class="messages">
+          <p class="system-note">今天</p>
+          <article class="message-row"><span class="avatar">展</span><div class="message-stack"><div class="bubble">您好，我想詢問訂單的出貨進度。</div><div class="message-meta">示範會員 14:28</div></div></article>
+          <article class="message-row me"><div class="message-stack"><div class="bubble">您好，我先為您確認，請稍等。</div><div class="message-meta">客服 A 14:30</div></div></article>
+          <article class="message-row"><span class="avatar">展</span><div class="message-stack"><div class="bubble">另外想請問 DEMO-1724937850123 這筆訂單目前的狀態。<div class="order-helper"><div class="order-helper-label">偵測到訂單編號</div><span class="order-badge">DEMO-1724937850123</span></div></div><div class="message-meta">示範會員 14:32</div></div></article>
+        </div>
+        <footer class="composer"><button class="composer-plus" aria-label="新增附件">＋</button><textarea aria-label="輸入訊息" placeholder="請輸入"></textarea><button class="composer-tool" aria-label="表情">☺</button><button class="composer-tool" aria-label="語言">文</button><button class="send" aria-label="傳送">➤</button></footer>
+      </section>
+      <aside class="panel order-panel">
+        <header class="order-panel-header"><div style="display:flex;align-items:center;gap:7px"><span class="back">‹</span><strong>詳細資訊</strong></div><span class="close">×</span></header>
+        <div class="order-scroll">
+          <div class="drawer-header"><span class="status-tag">已付款</span><span class="drawer-title">訂單編號：DEMO-1724937850123</span></div>
+          <section class="detail-form">
+            <div class="field"><label>訂單編號</label><div class="readonly">DEMO-1724937850123</div></div>
+            <div class="field col-6"><label>訂單狀態</label><div class="readonly">已付款</div></div><div class="field col-6"><label>付款方式</label><div class="readonly">信用卡支付</div></div>
+            <div class="field col-4"><label>商家應收</label><div class="readonly">NT$ 1,280</div></div><div class="field col-4"><label>PV 值</label><div class="readonly">0</div></div><div class="field col-4"><label>訂單總價</label><div class="readonly">NT$ 1,280</div></div>
+            <div class="field col-4"><label>下單時間</label><div class="readonly">2026-10-17 14:20</div></div><div class="field col-4"><label>付款時間</label><div class="readonly">2026-10-17 14:21</div></div><div class="field col-4"><label>撥款時間</label><div class="readonly">-</div></div>
+            <div class="field"><label>商品資訊</label><table class="product-table"><thead><tr><th class="name">名稱</th><th class="feature">商品特性</th><th>數量</th><th>規格</th><th>總價</th></tr></thead><tbody><tr><td>日用保溫瓶</td><td><span class="product-tag">一般商品</span></td><td>1</td><td>霧灰</td><td>NT$ 1,280</td></tr></tbody></table></div>
+          </section>
+        </div>
+      </aside>
+    </main>
+  </body>
+</html>

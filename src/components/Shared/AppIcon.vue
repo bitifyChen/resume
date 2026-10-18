@@ -22,13 +22,17 @@
     Plus,
     Search,
     Setting,
+    Sort,
     ShoppingBag,
     ShoppingCart,
     Star,
+    StarFilled,
     Switch,
     Upload,
     User,
-    View
+    View,
+    VideoPause,
+    VideoPlay
   } from '@element-plus/icons-vue'
   defineProps({
     name: { type: String, default: 'ArrowRight' },
@@ -57,13 +61,17 @@
     Plus,
     Search,
     Setting,
+    Sort,
     ShoppingBag,
     ShoppingCart,
     Star,
+    StarFilled,
     Switch,
     Upload,
     User,
-    View
+    View,
+    VideoPause,
+    VideoPlay
   }
 </script>
 

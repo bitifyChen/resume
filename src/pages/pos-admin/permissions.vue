@@ -67,7 +67,7 @@
             <strong>{{ role.name }}</strong>
             <small>
               {{
-                role.id === 'admin' ? '完整管理' : role.id === 'manager' ? '門店營運' : '基本查詢'
+                role.id === 'admin' ? '完整管理' : role.id === 'manager' ? '商家營運' : '基本查詢'
               }}
             </small>
           </span>

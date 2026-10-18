@@ -1,13 +1,55 @@
 <script setup>
-  import { nextTick, ref, watch } from 'vue'
+  import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
   import { asset, time } from '@/utils/format'
+  import { formatChatMessageHtml } from '@/utils/chatMessageHtml'
+  import AppIcon from '@/components/Shared/AppIcon.vue'
   const props = defineProps({
     messages: { type: Array, default: () => [] },
     chatId: { type: String, default: '' },
-    visible: { type: Boolean, default: true }
+    visible: { type: Boolean, default: true },
+    keyword: { type: String, default: '' }
   })
-  defineEmits(['edit', 'retract'])
+  const emit = defineEmits(['edit', 'retract'])
   const container = ref()
+  const menuMessage = ref(null)
+  const menuPosition = ref({ x: 0, y: 0 })
+
+  function openMenu(event, message) {
+    if (message.sender !== 'agent' || message.retracted) return
+    const width = 168
+    const height = message.type === 'text' ? 92 : 52
+    menuPosition.value = {
+      x: Math.max(8, Math.min(event.clientX, window.innerWidth - width - 8)),
+      y: Math.max(8, Math.min(event.clientY, window.innerHeight - height - 8))
+    }
+    menuMessage.value = message
+  }
+
+  function closeMenu() {
+    menuMessage.value = null
+  }
+
+  function onDocumentPointerDown(event) {
+    if (event.target.closest('.chat-message-menu, .message-action-trigger')) return
+    closeMenu()
+  }
+
+  function onDocumentKeydown(event) {
+    if (event.key === 'Escape') closeMenu()
+  }
+
+  function editMessage() {
+    const message = menuMessage.value
+    closeMenu()
+    if (message) emit('edit', message)
+  }
+
+  function retractMessage() {
+    const message = menuMessage.value
+    closeMenu()
+    if (message) emit('retract', message)
+  }
+
   watch(
     [() => props.messages.length, () => props.chatId, () => props.visible],
     async () => {
@@ -16,6 +58,14 @@
     },
     { immediate: true }
   )
+  onMounted(() => {
+    document.addEventListener('pointerdown', onDocumentPointerDown)
+    document.addEventListener('keydown', onDocumentKeydown)
+  })
+  onBeforeUnmount(() => {
+    document.removeEventListener('pointerdown', onDocumentPointerDown)
+    document.removeEventListener('keydown', onDocumentKeydown)
+  })
 </script>
 
 <template>
@@ -26,6 +76,7 @@
       :key="message.id"
       class="message"
       :class="{ own: message.sender === 'agent', retracted: message.retracted }"
+      @contextmenu.prevent="openMenu($event, message)"
     >
       <span class="message-sender">{{ message.sender === 'agent' ? '我' : '會員' }}</span>
       <div class="message-bubble">
@@ -39,22 +90,38 @@
           alt="虛構商品情境展示照片"
           class="chat-image"
         />
-        <p v-else>{{ message.text }}</p>
+        <!-- Content is escaped before the helper adds only controlled mark/link tags. -->
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <p v-else v-html="formatChatMessageHtml(message.text, keyword)"></p>
       </div>
       <div class="message-meta">
         <time>{{ time(message.createdAt) }}</time>
         <span v-if="message.edited && !message.retracted">已編輯</span>
-        <template v-if="message.sender === 'agent' && !message.retracted">
-          <button
-            v-if="message.type === 'text'"
-            class="text-button"
-            @click="$emit('edit', message)"
-          >
-            編輯
-          </button>
-          <button class="text-button" @click="$emit('retract', message)">收回</button>
-        </template>
+        <button
+          v-if="message.sender === 'agent' && !message.retracted"
+          type="button"
+          class="message-action-trigger"
+          aria-label="訊息操作"
+          aria-haspopup="menu"
+          @click.stop="openMenu($event, message)"
+        >
+          <AppIcon name="MoreFilled" :size="16" />
+        </button>
       </div>
     </article>
   </div>
+  <Teleport to="body">
+    <div
+      v-if="menuMessage"
+      class="chat-message-menu"
+      role="menu"
+      aria-label="訊息操作"
+      :style="{ left: `${menuPosition.x}px`, top: `${menuPosition.y}px` }"
+    >
+      <button v-if="menuMessage.type === 'text'" type="button" role="menuitem" @click="editMessage">
+        編輯訊息
+      </button>
+      <button type="button" role="menuitem" @click="retractMessage">收回訊息</button>
+    </div>
+  </Teleport>
 </template>

@@ -17,4 +17,7 @@ export const date = (value) =>
     minute: '2-digit',
     hour12: false
   }).format(new Date(value))
-export const asset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+export const asset = (path) =>
+  /^(?:https?:)?\/\//.test(path)
+    ? path
+    : `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`

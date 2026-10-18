@@ -1,7 +1,37 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+
+const HOME_SCROLL_KEY = 'portfolio-home-scroll-position'
+const detailRouteNames = new Set(['CaseStudy', 'Project', 'SideProject'])
+
+function rememberHomeScroll() {
+  if (typeof window === 'undefined') return
+  window.sessionStorage.setItem(HOME_SCROLL_KEY, String(window.scrollY))
+}
+
+function consumeHomeScroll() {
+  if (typeof window === 'undefined') return null
+
+  const storedPosition = window.sessionStorage.getItem(HOME_SCROLL_KEY)
+  window.sessionStorage.removeItem(HOME_SCROLL_KEY)
+  if (!storedPosition) return null
+
+  const top = Number(storedPosition)
+  return Number.isFinite(top) ? Math.max(0, top) : null
+}
+
+const localRoutes = import.meta.env.DEV
+  ? [
+      {
+        path: '/admin',
+        name: 'ContentAdmin',
+        component: () => import('@/pages/admin/index.vue'),
+        meta: { title: '案例內容編輯器', localEditor: true }
+      }
+    ]
+  : []
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -13,66 +43,21 @@ const router = createRouter({
       path: '/projects/:slug',
       name: 'Project',
       component: () => import('@/pages/projects/detail.vue'),
-      meta: { title: '產品案例' }
+      meta: { title: 'Project 詳情' }
     },
     {
-      path: '/demo/storefront',
-      name: 'Storefront',
-      component: () => import('@/pages/storefront/index.vue'),
-      meta: { title: '商城展示', demo: true }
+      path: '/side-projects/:slug',
+      name: 'SideProject',
+      component: () => import('@/pages/projects/detail.vue'),
+      meta: { title: 'Side Project 詳情' }
     },
     {
-      path: '/demo/commerce-admin',
-      component: () => import('@/layouts/admin.vue'),
-      meta: { demo: true, system: 'commerce' },
-      children: [
-        { path: '', redirect: '/demo/commerce-admin/chat' },
-        {
-          path: 'chat',
-          name: 'CommerceChat',
-          component: () => import('@/pages/commerce-admin/chat.vue'),
-          meta: { title: '客服工作台' }
-        },
-        {
-          path: 'orders',
-          name: 'CommerceOrders',
-          component: () => import('@/pages/commerce-admin/orders.vue'),
-          meta: { title: '訂單管理' }
-        },
-        {
-          path: 'products',
-          name: 'CommerceProducts',
-          component: () => import('@/pages/commerce-admin/products.vue'),
-          meta: { title: '商品管理' }
-        }
-      ]
+      path: '/case-studies/:id',
+      name: 'CaseStudy',
+      component: () => import('@/pages/case-studies/detail.vue'),
+      meta: { title: 'Case Study' }
     },
-    {
-      path: '/demo/pos-admin',
-      component: () => import('@/layouts/admin.vue'),
-      meta: { demo: true, system: 'pos' },
-      children: [
-        { path: '', redirect: '/demo/pos-admin/dashboard' },
-        {
-          path: 'dashboard',
-          name: 'PosDashboard',
-          component: () => import('@/pages/pos-admin/dashboard.vue'),
-          meta: { title: '營運總覽' }
-        },
-        {
-          path: 'inventory',
-          name: 'PosInventory',
-          component: () => import('@/pages/pos-admin/inventory.vue'),
-          meta: { title: '商品與庫存' }
-        },
-        {
-          path: 'permissions',
-          name: 'PosPermissions',
-          component: () => import('@/pages/pos-admin/permissions.vue'),
-          meta: { title: '角色權限' }
-        }
-      ]
-    },
+    ...localRoutes,
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
@@ -81,10 +66,24 @@ const router = createRouter({
     }
   ],
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) return savedPosition
+    if (savedPosition) {
+      if (to.name === 'Home') consumeHomeScroll()
+      return savedPosition
+    }
+
+    if (to.name === 'Home' && detailRouteNames.has(from.name)) {
+      const top = consumeHomeScroll()
+      if (top !== null) return { left: 0, top }
+    }
+
     if (to.path !== from.path) return { top: 0 }
   }
 })
+
+router.beforeEach((to, from) => {
+  if (from.name === 'Home' && detailRouteNames.has(to.name)) rememberHomeScroll()
+})
+
 router.afterEach((to) => {
   document.title = `${to.meta.title} / Chenchen`
 })

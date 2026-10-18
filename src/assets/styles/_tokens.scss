@@ -1,13 +1,13 @@
-/* Entry: editorial portfolio, variance 6 / motion 3 / density 4.
-   Product surfaces use Element Plus. Corners: panels 12px, controls 6px.
-   Layers: demo bar 30, mobile backdrop 35, navigation 40, Element overlays 2000+. */
+/* Entry: bright portfolio, variance 6 / motion 3 / density 5.
+   Component previews use Element Plus. Corners: panels 12px, controls 6px. */
 :root {
   color-scheme: light;
-  font-family: 'Manrope Variable', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  --display-font: 'Arial Narrow', 'Aptos Display', 'Manrope Variable', 'Noto Sans TC', sans-serif;
+  font-family: var(--display-font);
   color: #242d28;
-  background: #fafafa;
+  background: #f7f7f5;
   font-synthesis: none;
-  --page: #fafafa;
+  --page: #f7f7f5;
   --surface: #fdfdfb;
   --surface-muted: #f1f3ef;
   --canvas: #f5f6f3;
@@ -34,5 +34,5 @@
   --el-fill-color-blank: var(--surface);
   --el-fill-color-light: var(--surface-muted);
   --el-border-color: var(--line);
-  --el-font-family: 'Manrope Variable', 'Microsoft JhengHei', sans-serif;
+  --el-font-family: var(--display-font);
 }

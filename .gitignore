@@ -7,3 +7,9 @@ test-results/
 .DS_Store
 *.local
 .openai/deploy/
+/public/images/side-projects/**/_originals/
+/public/images/side-projects/quantweave/backtest-lab.png
+/public/images/side-projects/quantweave/industry-chain.png
+/public/images/side-projects/quantweave/overview.png
+/public/images/side-projects/quantweave/stock-research.png
+/public/images/side-projects/quantweave/strategy-workflow.png

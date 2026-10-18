@@ -100,7 +100,7 @@
       const seen = new Set()
       importRows.value = parsed.map((row, index) => {
         const item = rows.value.find((entry) => entry.sku === row[skuIndex]?.trim())
-        if (!item) throw new Error(`第 ${index + 2} 行找不到此門店的 SKU`)
+        if (!item) throw new Error(`第 ${index + 2} 行找不到此商家的 SKU`)
         if (seen.has(item.id)) throw new Error(`第 ${index + 2} 行為重複 SKU`)
         seen.add(item.id)
         const raw = row[quantityIndex]?.trim()
@@ -117,7 +117,7 @@
   }
   async function applyImport() {
     if (session.storeId !== importStoreId.value) {
-      ElMessage.error('門店已切換，請重新選取檔案')
+      ElMessage.error('商家已切換，請重新選取檔案')
       return
     }
     if (
@@ -273,7 +273,7 @@
   <el-dialog v-model="importOpen" title="預覽庫存匯入" width="min(640px, 94vw)">
     <el-alert v-if="importError" :title="importError" type="error" :closable="false" />
     <template v-else>
-      <p class="helper-text">確認後，將整批覆寫所選門店的對應庫存並保留紀錄。</p>
+      <p class="helper-text">確認後，將整批覆寫所選商家的對應庫存並保留紀錄。</p>
       <el-table :data="importRows">
         <el-table-column prop="sku" label="SKU" />
         <el-table-column prop="name" label="商品" />

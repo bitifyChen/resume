@@ -74,7 +74,7 @@
             <small>{{ isPos ? 'RETAIL OPERATIONS' : 'COMMERCE CONSOLE' }}</small>
           </div>
         </RouterLink>
-        <span class="sidebar-section-label">{{ isPos ? '門店營運' : '商城管理' }}</span>
+        <span class="sidebar-section-label">{{ isPos ? '商家營運' : '商城管理' }}</span>
         <nav aria-label="後台功能">
           <RouterLink
             v-for="link in links"
@@ -120,11 +120,11 @@
           </div>
           <div class="topbar-actions">
             <template v-if="isPos">
-              <label class="sr-only" for="store-switch">展示門店</label>
+              <label class="sr-only" for="store-switch">展示商家</label>
               <el-select
                 id="store-switch"
                 v-model="session.storeId"
-                aria-label="展示門店"
+                aria-label="展示商家"
                 class="store-switch"
               >
                 <el-option

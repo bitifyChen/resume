@@ -1,19 +1,11 @@
 <script setup>
-  import { watch } from 'vue'
-  import { useRoute } from 'vue-router'
   import zhTw from 'element-plus/es/locale/lang/zh-tw'
   import SiteHeader from '@/components/Showcase/SiteHeader.vue'
   import { scrollToElement } from '@/utils/dom'
-  const route = useRoute()
-  watch(
-    () => [route.meta.demo, route.meta.system],
-    ([demo, system]) => {
-      document.documentElement.dataset.product = demo ? system || 'storefront' : ''
-      document.documentElement.dataset.theme = 'light'
-      document.documentElement.classList.remove('dark')
-    },
-    { immediate: true }
-  )
+
+  document.documentElement.dataset.product = ''
+  document.documentElement.dataset.theme = 'light'
+  document.documentElement.classList.remove('dark')
 </script>
 
 <template>
@@ -25,14 +17,14 @@
     >
       跳至主要內容
     </a>
-    <SiteHeader v-if="!$route.meta.demo" />
+    <SiteHeader v-if="!$route.meta.localEditor" />
     <RouterView />
-    <footer v-if="!$route.meta.demo" class="site-footer page-container">
+    <footer v-if="!$route.meta.localEditor" class="site-footer page-container">
       <RouterLink to="/" class="wordmark">
         Chenchen
-        <span>/</span>
+        <span class="wordmark-divider">/</span>
       </RouterLink>
-      <p>獨立重製介面，所有展示資料皆為虛構。</p>
+      <p>公司專案為去識別重製；Side Project 使用個人作品實際內容。</p>
     </footer>
   </el-config-provider>
 </template>

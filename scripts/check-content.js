@@ -7,6 +7,16 @@ const corruptionMarkers = [0xfffd, 0x929d, 0x8763, 0x648c, 0x96a2, 0x61ad, 0x647
   (code) => String.fromCodePoint(code)
 )
 const files = ['README.md', 'index.html', 'package.json', '.github/workflows/pages.yml']
+const approvedExternalUrls = [
+  'https://chenchenworkshop.com/project',
+  'https://guidebook.chenchenworkshop.com',
+  'https://github.com/bitifyChen/guidebook',
+  'https://bitifyChen.github.io/RoadLoop',
+  'https://github.com/bitifyChen/RoadLoop',
+  'https://test-explorer.coolkertour.com',
+  'https://sosobook.chenchenworkshop.com',
+  'https://github.com/bitifyChen/sosobook'
+].map((url) => url.toLowerCase())
 async function collect(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const path = join(directory, entry.name)
@@ -21,11 +31,16 @@ for (const file of files) {
     const text = decoder.decode(await readFile(file))
     if (/\?{3,}/.test(text) || corruptionMarkers.some((marker) => text.includes(marker)))
       throw new Error('可能有中文編碼異常')
-    if (
-      file.startsWith('src') &&
-      /https?:\/\//.test(text.replace('https://chenchenworkshop.com/project', ''))
+    const externalUrls = [...text.matchAll(/https?:\/\/[^\s"'<>]+/g)].map(([url]) =>
+      url.toLowerCase()
     )
-      throw new Error('展示程式出現未核對的外部網址')
+    const unapprovedUrl = externalUrls.find(
+      (url) =>
+        !url.startsWith('https://example.com') &&
+        !approvedExternalUrls.some((approvedUrl) => url === approvedUrl || url.startsWith(`${approvedUrl}/`))
+    )
+    if (file.startsWith('src') && unapprovedUrl)
+      throw new Error(`展示程式出現未核對的外部網址：${unapprovedUrl}`)
   } catch (error) {
     errors++
     console.error(`${file}: ${error.message}`)

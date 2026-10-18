@@ -23,7 +23,7 @@
   let chart
   let observer
   const option = computed(() => ({
-    aria: { enabled: true, description: '虛構門店每日營收與訂單趨勢，可在資料表檢視數值。' },
+    aria: { enabled: true, description: '虛構商家每日營收與訂單趨勢，可在資料表檢視數值。' },
     color: ['#409eff', '#a5b4fc'],
     tooltip: { trigger: 'axis', valueFormatter: (value) => Number(value).toLocaleString('zh-TW') },
     legend: {

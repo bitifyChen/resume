@@ -1,5 +1,7 @@
-name: Publish demo to GitHub Pages
+name: Deploy portfolio to GitHub Pages
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,7 +22,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
   deploy:

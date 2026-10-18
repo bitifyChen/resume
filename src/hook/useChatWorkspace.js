@@ -1,5 +1,4 @@
 import { computed, ref, watch } from 'vue'
-import { ElMessageBox } from 'element-plus'
 import { useDemoData } from './useDemoData'
 
 export function useChatWorkspace() {
@@ -23,8 +22,13 @@ export function useChatWorkspace() {
       }))
       .filter((chat) => {
         const term = keyword.value.trim().toLowerCase()
+        const matchesMessage = chat.messages.some((message) =>
+          String(message.text || '').toLowerCase().includes(term)
+        )
         return (
-          (!term || `${chat.member?.name} ${chat.subject}`.toLowerCase().includes(term)) &&
+          (!term ||
+            `${chat.member?.name} ${chat.subject}`.toLowerCase().includes(term) ||
+            matchesMessage) &&
           (filter.value !== '我的' || chat.assignedTo === '我') &&
           (filter.value !== '未讀' || chat.unread > 0)
         )
@@ -59,42 +63,25 @@ export function useChatWorkspace() {
       if (draft.value === text) draft.value = ''
     }
   }
-  const edit = async (message) => {
-    let result
-    try {
-      result = await ElMessageBox.prompt('修改這則展示訊息。', '編輯訊息', {
-        inputValue: message.text,
-        inputType: 'textarea',
-        confirmButtonText: '儲存',
-        cancelButtonText: '取消',
-        inputValidator: (value) => (value?.trim() && value.length <= 2000) || '請輸入 1 到 2000 字'
-      })
-    } catch {
-      return
-    }
-    await execute(
-      'chat.edit',
-      { id: selectedId.value, messageId: message.id, text: result.value },
-      '訊息已編輯'
-    )
-  }
   const retract = async (message) => {
-    const chatId = selectedId.value
-    try {
-      await ElMessageBox.confirm('收回後，會話中將保留收回提示。', '收回訊息', {
-        confirmButtonText: '收回',
-        cancelButtonText: '取消'
-      })
-    } catch {
-      return
-    }
-    await execute('chat.retract', { id: chatId, messageId: message.id }, '已收回訊息')
+    await execute(
+      'chat.retract',
+      { id: selectedId.value, messageId: message.id },
+      '已收回訊息'
+    )
   }
   const simulate = () => {
     const target = database.value?.conversations.find(
       (chat) => chat.id !== selectedId.value && chat.status === '處理中'
     )
     if (target) execute('chat.receive', { id: target.id }, '另一則會話收到一則模擬訊息')
+  }
+  const simulateActive = async () => {
+    const id = selectedId.value
+    if (!id || !active.value) return
+    if (await execute('chat.receive', { id }, '目前對話收到一則即時訊息')) {
+      await execute('chat.read', { id })
+    }
   }
   return {
     database,
@@ -109,9 +96,9 @@ export function useChatWorkspace() {
     canReply,
     select,
     send,
-    edit,
     retract,
     simulate,
+    simulateActive,
     execute,
     saving,
     isPending,

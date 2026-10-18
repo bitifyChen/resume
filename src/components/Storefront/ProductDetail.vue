@@ -75,7 +75,7 @@
       <AppIcon name="House" :size="30" />
       <h2>日常選物示範店</h2>
       <p>商品與商家資訊均為虛構</p>
-      <span>服務時間 09:00–18:00</span>
+      <span>服務時間 09:00-18:00</span>
     </div>
     <section class="mall-detail-more">
       <div class="mall-detail-tabs">

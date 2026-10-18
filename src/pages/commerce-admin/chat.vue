@@ -1,5 +1,5 @@
 <script setup>
-  import { ref } from 'vue'
+  import { nextTick, ref, watch } from 'vue'
   import { useChatWorkspace } from '@/hook/useChatWorkspace'
   import { time } from '@/utils/format'
   import AppIcon from '@/components/Shared/AppIcon.vue'
@@ -17,9 +17,9 @@
     canReply,
     select,
     send,
-    edit,
     retract,
     simulate,
+    simulateActive,
     execute,
     saving,
     isPending,
@@ -29,12 +29,49 @@
   const memberOpen = ref(false)
   const panelVisible = ref(true)
   const searchOpen = ref(false)
+  const composerInput = ref(null)
+  const editDialogOpen = ref(false)
+  const editingMessage = ref(null)
+  const editDraft = ref('')
+
+  function openEditDialog(message) {
+    editingMessage.value = message
+    editDraft.value = message.text || ''
+    editDialogOpen.value = true
+  }
+
+  async function saveEditedMessage() {
+    const message = editingMessage.value
+    const text = editDraft.value.trim()
+    if (!message || !text || text.length > 2000 || saving.value) return
+    const result = await execute(
+      'chat.edit',
+      { id: selectedId.value, messageId: message.id, text },
+      '訊息已編輯'
+    )
+    if (result) {
+      editDialogOpen.value = false
+      editingMessage.value = null
+      editDraft.value = ''
+    }
+  }
+
+  function resizeComposer() {
+    const input = composerInput.value
+    if (!input) return
+    input.style.height = 'auto'
+    input.style.height = `${Math.min(input.scrollHeight, 150)}px`
+  }
   function onEnter(event) {
-    if (!event.shiftKey && !event.isComposing) {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
       event.preventDefault()
       send()
     }
   }
+  watch(draft, async () => {
+    await nextTick()
+    resizeComposer()
+  })
 </script>
 
 <template>
@@ -77,7 +114,7 @@
         </el-button>
       </div>
       <div v-if="searchOpen" class="conversation-search">
-        <el-input v-model="keyword" placeholder="搜尋會員或對話" aria-label="搜尋會話" clearable>
+        <el-input v-model="keyword" placeholder="搜尋會員、對話或訊息" aria-label="搜尋會話" clearable>
           <template #prefix><AppIcon name="Search" :size="16" /></template>
         </el-input>
         <div class="conversation-filters">
@@ -152,6 +189,9 @@
           </span>
         </div>
         <div class="chat-header-actions">
+          <el-button plain size="small" :disabled="saving" @click="simulateActive">
+            模擬即時來訊
+          </el-button>
           <button
             class="icon-button"
             :aria-label="active.pinned ? '取消釘選' : '釘選會話'"
@@ -222,7 +262,8 @@
         :messages="active.messages"
         :chat-id="active.id"
         :visible="mobileDetail"
-        @edit="edit"
+        :keyword="keyword"
+        @edit="openEditDialog"
         @retract="retract"
       />
       <div v-if="!canReply" class="chat-reply-notice">
@@ -242,41 +283,81 @@
           加入會話
         </el-button>
       </div>
-      <div class="chat-composer">
-        <el-input
-          v-model="draft"
-          type="textarea"
-          :rows="2"
-          resize="none"
-          :maxlength="2000"
-          :disabled="!canReply"
-          placeholder="輸入訊息，Enter 傳送，Shift + Enter 換行"
-          aria-label="回覆訊息"
-          @keydown="(event) => event.key === 'Enter' && onEnter(event)"
-        />
-        <div class="composer-toolbar">
-          <el-button text size="small" :disabled="!canReply || saving" @click="send('image')">
-            <AppIcon name="Picture" :size="19" />
-            <span>傳送展示圖片</span>
-          </el-button>
-          <span class="composer-help">{{ draft.length }}/2000</span>
-          <el-button
-            type="primary"
-            :loading="saving"
-            :disabled="!canReply || !draft.trim()"
-            @click="send()"
-          >
-            傳送
-            <AppIcon name="ArrowRight" :size="15" />
-          </el-button>
+      <form class="chat-composer" @submit.prevent="send()">
+        <el-dropdown trigger="click">
+          <button type="button" class="chat-composer-add" aria-label="傳送展示圖片">
+            <AppIcon name="Plus" :size="18" />
+          </button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="send('image')">傳送展示圖片</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+        <div class="chat-composer-main">
+          <textarea
+            ref="composerInput"
+            v-model="draft"
+            rows="1"
+            :maxlength="2000"
+            :disabled="!canReply"
+            placeholder="輸入訊息..."
+            aria-label="回覆訊息"
+            @input="resizeComposer"
+            @keydown="(event) => event.key === 'Enter' && onEnter(event)"
+          />
+          <div class="chat-composer-actions">
+            <span class="composer-help">Enter 傳送・Shift + Enter 換行</span>
+            <button
+              type="submit"
+              class="chat-send-button"
+              :disabled="!canReply || saving || !draft.trim()"
+            >
+              傳送 <AppIcon name="ArrowRight" :size="15" />
+            </button>
+          </div>
         </div>
-      </div>
+      </form>
     </section>
     <el-empty v-else description="選擇一則會話開始處理" />
     <aside v-if="panelVisible" class="chat-member-sidebar">
       <MemberPanel :member="member" :order-id="active?.orderId" />
     </aside>
   </div>
+  <el-dialog
+    v-model="editDialogOpen"
+    title="編輯訊息"
+    width="min(520px, calc(100vw - 32px))"
+    class="chat-message-dialog"
+    append-to-body
+    align-center
+    :close-on-click-modal="false"
+    @closed="editingMessage = null"
+  >
+    <label class="chat-edit-label" for="chat-message-edit">訊息內容</label>
+    <textarea
+      id="chat-message-edit"
+      v-model="editDraft"
+      class="chat-edit-textarea"
+      rows="5"
+      maxlength="2000"
+      placeholder="輸入訊息內容"
+    />
+    <p class="chat-edit-counter">{{ editDraft.length }} / 2000</p>
+    <template #footer>
+      <div class="chat-edit-actions">
+        <el-button @click="editDialogOpen = false">取消</el-button>
+        <el-button
+          type="primary"
+          :loading="saving"
+          :disabled="!editDraft.trim() || editDraft.length > 2000"
+          @click="saveEditedMessage"
+        >
+          儲存
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
   <el-drawer v-model="memberOpen" title="會員資訊" size="min(360px, 100vw)">
     <MemberPanel :member="member" :order-id="active?.orderId" />
   </el-drawer>

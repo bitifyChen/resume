@@ -179,7 +179,7 @@ export function createSeed(now = Date.now()) {
               id: 'seed-0-2',
               sender: 'agent',
               type: 'text',
-              text: '您好，我正在幫您確認訂單，請稍等一下。',
+              text: '您好，我正在幫您確認訂單，請稍等一下。也可查看 https://example.com/orders 訂單狀態。',
               createdAt: now - 120_000
             },
             {
@@ -235,7 +235,7 @@ export function createSeed(now = Date.now()) {
       },
       {
         id: 'manager',
-        name: '門店店長',
+        name: '商家管理者',
         description: '管理商品、庫存與營運報表。',
         permissions: {
           products: ['view', 'edit', 'export'],
@@ -246,7 +246,7 @@ export function createSeed(now = Date.now()) {
       },
       {
         id: 'clerk',
-        name: '門店夥伴',
+        name: '商家夥伴',
         description: '查看商品與庫存，不可修改或匯出。',
         permissions: { products: ['view'], inventory: ['view'], reports: [], team: [] }
       }
