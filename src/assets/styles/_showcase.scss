@@ -997,7 +997,7 @@
 .case-section-heading > p:last-child {
   margin-top: 9px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
 }
 
@@ -1163,14 +1163,14 @@
 
 .issue-details dt {
   color: var(--ink);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 760;
 }
 
 .issue-details dd {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.85;
 }
 
@@ -1338,7 +1338,7 @@
   max-width: 28em;
   margin-top: 16px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.75;
 }
 
@@ -1564,12 +1564,16 @@
   margin-top: 22px;
 }
 
+.project-detail-ownership .case-story-list dt {
+  font-size: 16px;
+}
+
 .side-project-highlights .case-story-list {
   margin-top: 22px;
 }
 
 .side-project-highlights dt {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.55;
 }
 
@@ -1756,7 +1760,7 @@
   max-width: 50em;
   margin-top: 8px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.85;
 }
 
@@ -3320,7 +3324,7 @@
 
   .project-overview-summary {
     margin-top: 13px;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .project-overview-copy .button {
@@ -3353,7 +3357,12 @@
   }
 
   .case-study-page-description {
-    font-size: 13px;
+    font-size: 14px;
+  }
+
+  .case-section-heading > p:last-child,
+  .issue-details dd {
+    font-size: 14px;
   }
 
   .case-section-heading h2 {
